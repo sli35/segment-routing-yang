@@ -1,0 +1,80 @@
+error : No such file or directory
+warning: failed to load external entity "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"
+draft-l3vpn-service-yang.xml:1454: parser error : Failure to process entity RFC2119
+      &RFC2119;
+               ^
+draft-l3vpn-service-yang.xml:1454: parser error : Entity 'RFC2119' not defined
+      &RFC2119;
+               ^
+error : No such file or directory
+warning: failed to load external entity "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6020.xml"
+draft-l3vpn-service-yang.xml:1455: parser error : Failure to process entity RFC6020
+      &RFC6020;
+               ^
+draft-l3vpn-service-yang.xml:1455: parser error : Entity 'RFC6020' not defined
+      &RFC6020;
+               ^
+error : No such file or directory
+warning: failed to load external entity "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6241.xml"
+draft-l3vpn-service-yang.xml:1456: parser error : Failure to process entity RFC6241
+      &RFC6241;
+               ^
+draft-l3vpn-service-yang.xml:1456: parser error : Entity 'RFC6241' not defined
+      &RFC6241;
+               ^
+error : No such file or directory
+warning: failed to load external entity "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6242.xml"
+draft-l3vpn-service-yang.xml:1457: parser error : Failure to process entity RFC6242
+      &RFC6242;
+               ^
+draft-l3vpn-service-yang.xml:1457: parser error : Entity 'RFC6242' not defined
+      &RFC6242;
+               ^
+error : No such file or directory
+warning: failed to load external entity "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6536.xml"
+draft-l3vpn-service-yang.xml:1458: parser error : Failure to process entity RFC6536
+      &RFC6536;
+               ^
+draft-l3vpn-service-yang.xml:1458: parser error : Entity 'RFC6536' not defined
+      &RFC6536;
+               ^
+error : No such file or directory
+warning: failed to load external entity "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4577.xml"
+draft-l3vpn-service-yang.xml:1459: parser error : Failure to process entity RFC4577
+	  &RFC4577;
+	           ^
+draft-l3vpn-service-yang.xml:1459: parser error : Entity 'RFC4577' not defined
+	  &RFC4577;
+	           ^
+error : No such file or directory
+warning: failed to load external entity "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4364.xml"
+draft-l3vpn-service-yang.xml:1460: parser error : Failure to process entity RFC4364
+	  &RFC4364;
+	           ^
+draft-l3vpn-service-yang.xml:1460: parser error : Entity 'RFC4364' not defined
+	  &RFC4364;
+	           ^
+error : No such file or directory
+warning: failed to load external entity "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4110.xml"
+draft-l3vpn-service-yang.xml:1461: parser error : Failure to process entity RFC4110
+	  &RFC4110;
+	           ^
+draft-l3vpn-service-yang.xml:1461: parser error : Entity 'RFC4110' not defined
+	  &RFC4110;
+	           ^
+error : No such file or directory
+warning: failed to load external entity "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6513.xml"
+draft-l3vpn-service-yang.xml:1462: parser error : Failure to process entity RFC6513
+	  &RFC6513;
+	           ^
+draft-l3vpn-service-yang.xml:1462: parser error : Entity 'RFC6513' not defined
+	  &RFC6513;
+	           ^
+unable to parse draft-l3vpn-service-yang.xml
+-:1: parser error : Document is empty
+
+^
+-:1: parser error : Start tag expected, '<' not found
+
+^
+make: *** [draft-l3vpn-service-yang-00.xml] Erreur 1

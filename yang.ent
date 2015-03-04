@@ -1,0 +1,3 @@
+<!-- External entities for files with modules -->
+<!ENTITY ietf-segment-routing.yang SYSTEM "ietf-segment-routing.yang.aw">
+<!ENTITY example-get-config-reply.xml SYSTEM "example-get-config-reply.xml.aw">

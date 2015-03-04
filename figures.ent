@@ -1,0 +1,5 @@
+<!-- External entities for files with figures -->
+<!ENTITY ietf-segment-routing.tree SYSTEM "ietf-segment-routing.tree.aw">
+<!ENTITY interfaces.tree SYSTEM "interfaces.tree.aw">
+<!ENTITY rpcs.tree SYSTEM "rpcs.tree.aw">
+<!ENTITY notifications.tree SYSTEM "notifications.tree.aw">

@@ -1,0 +1,81 @@
+<artwork><![CDATA[
+module: ietf-segment-routing
+augment /rt:routing/rt:routing-instance:
+   +--rw segment-routing
+      +--rw transport-type?   identityref
+      +--rw bindings
+      |  +--rw mapping-server
+      |     +--rw ipv4
+      |     |  +--rw mapping-entry* [prefix]
+      |     |     +--rw prefix       inet:ipv4-prefix
+      |     |     +--rw start-sid?   uint32
+      |     |     +--rw range?       uint32
+      |     +--rw ipv6
+      |        +--rw mapping-entry* [prefix]
+      |           +--rw prefix       inet:ipv6-prefix
+      |           +--rw start-sid?   uint32
+      |           +--rw range?       uint32
+      +--rw srgb* [lower-bound upper-bound]
+      |  +--rw lower-bound    uint32
+      |  +--rw upper-bound    uint32
+      +--rw interfaces
+         +--rw interface* [name]
+            +--rw name             if:interface-ref
+            +--rw adjacency-sid
+            |  +--rw authorize-bundle
+            |  |  +--rw enabled?   boolean
+            |  |  +--rw weight?    uint8
+            |  +--rw advertise-protection?   enumeration
+            +--rw prefix-sid
+               +--rw ipv4
+               |  +--rw prefix-sid* [value]
+               |     +--rw value-type?          enumeration
+               |     +--rw value                uint32
+               |     +--rw node-flag?           boolean
+               |     +--rw last-hop-behavior?   enumeration
+               +--rw ipv6
+                  +--rw prefix-sid* [value]
+                     +--rw value-type?          enumeration
+                     +--rw value                uint32
+                     +--rw node-flag?           boolean
+                     +--rw last-hop-behavior?   enumeration
+augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:instance:
+   +--rw segment-routing
+      +--rw enabled?    boolean
+      +--rw bindings
+         +--rw advertise?   boolean
+         +--rw receive?     boolean
+augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol/ospf:ospf/ospf:instance:
+   +--rw segment-routing
+      +--rw enabled?    boolean
+      +--rw bindings
+         +--rw advertise?   boolean
+         +--rw receive?     boolean
+augment /rt:routing-state/rt:routing-instance:
+   +--ro segment-routing
+      +--ro label-blocks*
+      |  +--ro lower-bound?   uint32
+      |  +--ro upper-bound?   uint32
+      |  +--ro size?          uint32
+      |  +--ro free?          uint32
+      |  +--ro used?          uint32
+      +--ro global-sid-list
+         +--ro sid* [target sid source source-protocol binding-type]
+            +--ro target             string
+            +--ro sid                uint32
+            +--ro algorithm?         uint8
+            +--ro source             inet:ip-address
+            +--ro used?              boolean
+            +--ro source-protocol    leafref
+            +--ro binding-type       enumeration
+notifications:
+   +---n segment-routing-global-sid-collision    
+   |  +--ro received-target?    string
+   |  +--ro original-target?    string
+   |  +--ro index?              uint32
+   |  +--ro routing-protocol?   leafref
+   +---n segment-routing-index-out-of-range      
+      +--ro received-target?    string
+      +--ro received-index?     uint32
+      +--ro routing-protocol?   leafref
+]]></artwork>

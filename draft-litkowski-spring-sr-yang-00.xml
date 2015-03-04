@@ -1,0 +1,1118 @@
+<?xml version="1.0"?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="4"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc docName="draft-litkowski-spring-sr-yang-00" ipr="trust200902" category="std" obsoletes="" updates="" submissionType="IETF" xml:lang="en">
+  <front>
+    <title abbrev="sr-yang-cfg">YANG Data Model for Segment Routing</title>
+    <author fullname="Stephane Litkowski" initials="S" surname="Litkowski">
+      <organization>Orange Business Service</organization>
+      <address>
+        <email>stephane.litkowski@orange.com</email>
+      </address>
+    </author>
+	<author fullname="Acee Lindem" initials="A" surname="Lindem">
+      <organization>Cisco Systems</organization>
+      <address>
+        <email>acee@cisco.com</email>
+      </address>
+    </author>
+	<author fullname="Pushpasis Sarkar" initials="P" surname="Sarkar">
+      <organization>Juniper Networks</organization>
+      <address>
+        <email>psarkar@juniper.net</email>
+      </address>
+    </author>
+	<author fullname="Ing-Wher Chen" initials="I" surname="Chen">
+      <organization>Ericsson</organization>
+      <address>
+        <email>ing-wher.chen@ericsson.com</email>
+      </address>
+    </author>
+    <date day="04" month="March" year="2015"/>
+    <area/>
+    <workgroup>SPRING Working Group</workgroup>
+
+    <abstract>
+      <t>
+	  This document defines a YANG data model for segment routing configuration and operation.
+	  This YANG model is intended to be used on network elements to configure or operate segment routing.
+	  </t>
+    </abstract>
+    <note title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described
+      in <xref target="RFC2119" pageno="false" format="default"/>.</t>
+    </note>
+  </front>
+  <middle>
+    <section anchor="introduction" title="Introduction" toc="default">
+      <t>
+      This document defines a YANG data model for segment routing configuration and operation.</t>
+      
+      <section anchor="tree-info" title="Tree diagram" toc="default">
+        <t>A simplified graphical representation of the data model is
+        presented in <xref target="design" pageno="false" format="default"/>.</t>
+
+	
+<t>The meaning of the symbols in these diagrams is as follows:
+<list style="symbols">
+  <t>Brackets "[" and "]" enclose list keys.</t>
+  <t>Curly braces "{" and "}" contain names of optional features that
+  make the corresponding node conditional.</t>
+  <t>Abbreviations before data node names: "rw" means configuration
+  (read-write), and "ro" state data (read-only).</t>
+  <t>Symbols after data node names: "?" means an optional node and "*"
+  denotes a "list" or "leaf-list".</t>
+  <t>Parentheses enclose choice and case nodes, and case nodes are
+  also marked with a colon (":").</t>
+  <t>Ellipsis ("...")  stands for contents of subtrees that are not
+  shown.</t>
+</list></t>
+
+
+      </section>
+    </section>
+	
+
+	<section anchor="design" title="Design of the Data Model" toc="default">
+
+      <figure title="" suppress-title="false" align="left" alt="" width="" height="">
+		<artwork xml:space="preserve" name="" type="" align="left" alt="" width="" height="">
+module: ietf-segment-routing
+augment /rt:routing/rt:routing-instance:
+   +--rw segment-routing
+      +--rw transport-type?   identityref
+      +--rw bindings
+      |  +--rw mapping-server
+      |     +--rw ipv4
+      |     |  +--rw mapping-entry* [prefix]
+      |     |     +--rw prefix       inet:ipv4-prefix
+      |     |     +--rw start-sid?   uint32
+      |     |     +--rw range?       uint32
+      |     +--rw ipv6
+      |        +--rw mapping-entry* [prefix]
+      |           +--rw prefix       inet:ipv6-prefix
+      |           +--rw start-sid?   uint32
+      |           +--rw range?       uint32
+      +--rw srgb* [lower-bound upper-bound]
+      |  +--rw lower-bound    uint32
+      |  +--rw upper-bound    uint32
+      +--rw interfaces
+         +--rw interface* [name]
+            +--rw name             if:interface-ref
+            +--rw adjacency-sid
+            |  +--rw authorize-bundle
+            |  |  +--rw enabled?   boolean
+            |  |  +--rw weight?    uint8
+            |  +--rw advertise-protection?   enumeration
+            +--rw prefix-sid
+               +--rw ipv4
+               |  +--rw prefix-sid* [value]
+               |     +--rw value-type?          enumeration
+               |     +--rw value                uint32
+               |     +--rw node-flag?           boolean
+               |     +--rw last-hop-behavior?   enumeration
+               +--rw ipv6
+                  +--rw prefix-sid* [value]
+                     +--rw value-type?          enumeration
+                     +--rw value                uint32
+                     +--rw node-flag?           boolean
+                     +--rw last-hop-behavior?   enumeration
+augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:instance:
+   +--rw segment-routing
+      +--rw enabled?    boolean
+      +--rw bindings
+         +--rw advertise?   boolean
+         +--rw receive?     boolean
+augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol/ospf:ospf/ospf:instance:
+   +--rw segment-routing
+      +--rw enabled?    boolean
+      +--rw bindings
+         +--rw advertise?   boolean
+         +--rw receive?     boolean
+augment /rt:routing-state/rt:routing-instance:
+   +--ro segment-routing
+      +--ro label-blocks*
+      |  +--ro lower-bound?   uint32
+      |  +--ro upper-bound?   uint32
+      |  +--ro size?          uint32
+      |  +--ro free?          uint32
+      |  +--ro used?          uint32
+      +--ro global-sid-list
+         +--ro sid* [target sid source source-protocol binding-type]
+            +--ro target             string
+            +--ro sid                uint32
+            +--ro algorithm?         uint8
+            +--ro source             inet:ip-address
+            +--ro used?              boolean
+            +--ro source-protocol    leafref
+            +--ro binding-type       enumeration
+notifications:
+   +---n segment-routing-global-sid-collision    
+   |  +--ro received-target?    string
+   |  +--ro original-target?    string
+   |  +--ro index?              uint32
+   |  +--ro routing-protocol?   leafref
+   +---n segment-routing-index-out-of-range      
+      +--ro received-target?    string
+      +--ro received-index?     uint32
+      +--ro routing-protocol?   leafref
+</artwork>
+
+      </figure>
+	  <t>The organization of this module and protocol modules have to be discussed.</t>
+	</section>
+
+	<section anchor="how" title="Configuration" toc="default">
+	<t>
+	This module augments the "/rt:routing/rt:routing-instance:" with a segment-routing container.
+	This container defines all the configuration parameters related to segment-routing for this particular routing-instance.
+	</t>
+	
+	<t>
+	The segment-routing configuration is split in global configuration and interface configuration.
+	</t>
+	<t>The global configuration defines :
+	<list style="symbols">
+	<t>segment-routing transport type : the standard model supports only MPLS as segment-routing dataplane. The transport-type is defined
+	only once for a particular routing-instance and is agnostic to the control plane used. Only a single transport-type is supported now.</t>
+	<t>bindings : defines how external informations may be advertised as a segment ID. The current version supports the mapping-server where static bindings can
+	be defined (prefix to SID bindings). Configuration of bindings does not allow advertisement of those bindings. Advertisement must be controlled by each controlplane.</t>
+	<t>SRGB (Segment Routing Global Block) : defines a list of label blocks defined as pair of lower-bound/upper-bound where the node will pick up for Prefix-SID.
+	The SRGB is also agnostic to the controlplane to be used. So all controlplanes will have to advertise the same SRGB.</t>
+	</list>
+	</t>
+	<t>The interface configuration defines :
+	<list style="symbols">
+	<t>Adjacency SID properties</t>
+	<t>Prefix SID properties</t>
+	</list>
+	</t>
+		<section anchor="adj-cfg" title="Adjacency SID properties" toc="default">
+		<t>
+		In case of parallel IP links between routers, an additional Adjacency SID may be advertised for each parallel adjacency with a common value.
+		The "authorize-bundle" configuration defines if operator wants to enable such behavior.
+		</t>
+		<t>
+		The "advertise-protection" defines how protection of an interface should be advertised. It does not control the activation or deactivation of the protection.
+		If "single" option is used, a single Adj-SID will be added to the interface. If the interface is protected, the B flag of the adjacency will reflect this state.
+		If "dual" option is used and if the interface is protected, two adjacency segments will be associated with the adjacencies present on the interface. One Adj-SID will always have B unset, the other will have B set.
+		This option is intended to be used in case of traffic engineering where a path must use protected segments or non protected segments.
+		</t>
+		</section>
+		<section anchor="prefix-cfg" title="Prefix SID properties" toc="default">
+		<t>
+		An interface may own IP prefixes. By default, no prefix SID will be advertised for any IP prefix owned by the interface.
+		</t>
+		<t>When adding "prefix-sid" in the interface configuration, the operator can control the advertisement of a prefix SID.</t>
+		<t>The operator can control advertisement of prefix SID independently for IPv4 and IPv6. Operator is required to set a prefix-sid value.</t>
+		<t>The value can be expressed as an index (default), or an absolute value. Operator can also control if the node flag must be set for the prefix. As the router owns the prefix, the default value is to advertise node flag as set.</t>
+		<t>The last-hop-behavior commands the PHP behavior : explicit-null, php or non php.</t>
+		</section>
+	</section>
+	<section anchor="cp" title="Control plane configuration" toc="default">
+	<t>
+	Activation of segment-routing extensions for a particular control plane is done by augmenting routing-protocol configuration with segment-routing.
+	</t>
+	<t>The "enabled" leaf permits to active advertisement of segment-routing extensions within the routing protocol.</t>
+	<t>The "binding" container defines the ability for the routing protocol to advertise or receive bindings.</t>
+	<t>This model supports ISIS (<xref target="I-D.ietf-isis-segment-routing-extensions" pageno="false" format="default"/>) and OSPF as controlplane (<xref target="I-D.psenak-ospf-segment-routing-extensions" pageno="false" format="default"/> and <xref target="I-D.psenak-ospf-segment-routing-ospfv3-extension" pageno="false" format="default"/>) for segment-routing.</t>
+	</section>
+	<section anchor="states" title="States" toc="default">
+	<t>
+	The operational states currently contains information about usage of allocated label blocks. 
+	</t>
+	<t>It also provides information on global SID bindings. A list of all globally allocated SIDs is provided associated with information about the binding.</t>
+	</section>
+	<section anchor="notif" title="Notifications" toc="default">
+	<t>
+	The model proposes two notifications for segment-routing. 
+	<list style="symbols">
+	<t>segment-routing-global-sid-collision : must be raised when a new learning through controlplane has an index which is already associated with another target.</t>
+	<t>segment-routing-index-out-of-range : must be raised when a new learning through controlplane has an index which is outside the SRGB configured on the node.</t>
+	</list>
+	</t>
+	</section>
+    <section anchor="yang" title="YANG Module" toc="default">
+
+      <figure title="" suppress-title="false" align="left" alt="" width="" height="">
+	<artwork xml:space="preserve" name="" type="" align="left" alt="" width="" height="">
+&lt;CODE BEGINS&gt; file "ietf-segment-routing@2015-03-04.yang"
+
+module ietf-segment-routing {
+  namespace "urn:ietf:params:xml:ns:"
+          + "yang:ietf-segment-routing";
+  prefix sr;
+
+  import ietf-inet-types {
+    prefix "inet";
+  }
+
+  import ietf-routing {
+    prefix "rt";
+  }
+
+  import ietf-interfaces {
+	prefix "if";
+  }
+  
+  import ietf-isis {
+	prefix "isis";
+  }
+  
+  import ospf {
+	prefix "ospf";
+  }
+  
+  organization
+	 "IETF SPRING Working Group";
+	 
+	contact
+		"WG List:	&amp;lt;mailto:spring@ietf.org&amp;gt;
+		
+		Editor:		Stephane Litkowski
+					&amp;lt;mailto:stephane.litkowski@orange.com&amp;gt;
+
+				Acee Lindem
+					&amp;lt;mailto:acee@cisco.com&amp;gt;
+				Pushpasis Sarkar
+					&amp;lt;mailto:psarkar@juniper.net&amp;gt;
+				Ing-Wher Chen
+					&amp;lt;mailto:ing-wher.chen@ericsson.com&amp;gt;
+
+		";
+  
+	description 
+		"The YANG module defines a generic configuration model for 
+		Segment routing common across all of the vendor 
+		implementations.";
+		
+	revision 2015-02-27 {
+		description "Initial";
+		reference "draft-litkowski-spring-sr-yang-00";
+	}
+	
+	/* Identities */
+	identity segment-routing-transport {
+		description
+		"Base identity for segment routing transport.";
+	}
+	identity segment-routing-transport-mpls {
+		base segment-routing-transport;
+		description
+		"This identity represents MPLS transport for segment
+		routing.";
+	}	
+	
+	
+	/* Groupings */
+	
+	grouping controlplane-cfg {
+		container segment-routing {
+			leaf enabled {
+				type boolean;
+				default false;
+				description
+				 "Enables segment-routing 
+				 protocol extensions.";
+			}
+			container bindings {
+				leaf advertise {
+					type boolean;
+					default true;
+					description
+					"Authorize the advertise
+					of local mappings in binding TLV.";
+				}
+				leaf receive {
+					type boolean;
+					default true;
+					description
+					"Authorize the reception and usage
+					of binding TLV.";
+				}
+				description
+				 "Control of binding advertisement 
+				 and reception.";
+			}
+			
+			description
+			"segment routing global config.";	
+		}	
+		description
+		 "Defines protocol configuration.";
+	}
+	
+	grouping prefix-sid-cfg {
+		list prefix-sid {	
+			key value;	
+			leaf value-type {
+				type enumeration {
+					enum index {
+						description
+							 "The value will be
+							 interpreted as an index.";
+						
+					}
+					enum absolute {
+						
+						description
+							 "The value will become
+							 interpreted as an absolute
+							 value.";
+					}
+				}
+				default index;
+				description
+					"This leaf defines how value
+					 must be interpreted.";
+			}
+			
+			leaf value {
+				type uint32;
+				mandatory true;
+				description
+				"Value associated with 
+				prefix. The value must
+				be interpreted in the
+				context of value-type.";
+			}									
+			leaf node-flag {
+				type boolean;
+				default true;
+				description
+				"Set prefix as a node 
+				 representative prefix.";											
+			}
+			leaf last-hop-behavior {
+				type enumeration {
+					enum explicit-null {
+						description
+						 "Use explicit-null for the SID.";
+					}
+					enum no-php {
+						description
+						 "Do no use PHP for the SID.";
+					}
+					enum php {
+						description
+						 "Use PHP for the SID.";
+					}
+				}
+				description
+				 "Configure last hop behavior.";
+			}
+			description
+			 "List of prefix SID.";
+		}
+		description
+		 "This grouping defines cfg of prefix SID.";
+	}
+	
+	/* Cfg */
+	
+	augment "/rt:routing/rt:routing-instance" {
+		description
+		 "This augments routing-instance
+		 configuration with segment-routing.";
+		container segment-routing {
+			leaf transport-type {
+				type identityref {
+					base segment-routing-transport;	
+				}
+				default "segment-routing-transport-mpls";	
+				description "Dataplane to be used.";	
+			}
+			container bindings {
+				container mapping-server {
+					container ipv4 {
+						list mapping-entry {
+							key prefix;
+							
+							leaf prefix {
+								type inet:ipv4-prefix;
+								description
+								 "Base prefix used for mapping.";
+							}
+							leaf start-sid {
+								type uint32;
+								description
+								 "Starting SID value to be associated
+								 with prefix.";
+							}
+							leaf range {
+								type uint32;
+								description
+								 "Describes how many SIDs could be
+								 allocated.";
+							}
+							description
+							 "Mapping entries.";
+						}
+						description
+						 "IPv4 mapping entries.";
+					}
+					container ipv6 {
+						list mapping-entry {
+							key prefix;
+							
+							leaf prefix {
+								type inet:ipv6-prefix;
+								description
+								 "Base prefix used for mapping.";
+							}
+							leaf start-sid {
+								type uint32;
+								description
+								 "Starting SID value to be associated
+								 with prefix.";
+							}
+							leaf range {
+								type uint32;
+								description
+								 "Describes how many SIDs could be
+								 allocated.";
+							}
+							description
+							 "Mapping entries.";
+						}
+						description
+						 "IPv6 mapping entries.";
+					}
+					description
+					 "Configuration of mapping-server
+					  local entries.";
+				}
+				description
+				 "List of bindings.";
+			}
+			list srgb {
+				key "lower-bound upper-bound";
+				ordered-by user;
+				leaf lower-bound {
+					type uint32;
+					description
+					"Lower value in the block.";	
+				}
+				leaf upper-bound {
+					type uint32;
+					description
+					"Upper value in the block.";	
+				}
+				description
+					"List of global blocks to be 
+						 advertised.";	
+			}	
+			
+			container interfaces {		
+				list interface {
+					key "name";
+					leaf name {
+						type if:interface-ref;
+						
+						description 
+						 "Reference to the interface within
+						  the routing-instance.";
+					}
+					container adjacency-sid {
+						container authorize-bundle {
+							leaf enabled {
+								type boolean;
+								description
+								 "Enable/disable S flag.";
+							}
+							leaf weight {
+								type uint8;
+								description
+								 "The value represents the 
+								 weight of the Adj-SID
+								for the purpose of load balancing.";
+							}
+							description
+							 "Control advertisement of S flag.
+							 Enable to advertise a common Adj-SID
+							 for parallel links.";
+						}
+						leaf advertise-protection {
+							type enumeration {
+								enum "single" {
+									description
+									 "A single Adj-SID is associated
+									 with the adjacency and reflects 
+									 the protection configuration.";
+								}
+								enum "dual" {
+									description
+									 "Two Adj-SIDs will be associated
+									 with the adjacency if interface
+									 is protected. In this case
+									 one will be enforced with 
+									 backup flag set, the other
+									 will be enforced to backup flag unset.
+									 In case, protection is not configured,
+									 a single Adj-SID will be advertised
+									 with backup flag unset.";
+								}
+							}
+							description
+							 "If set, the Adj-SID refers to an
+							adjacency being protected.";
+						}
+						description
+						 "Defines the adjacency SID properties.";
+					}
+					container prefix-sid {
+						container ipv4 {
+							uses prefix-sid-cfg;
+							description
+							 "Parameters associated with IPv4 prefix SID";
+						}
+						container ipv6 {
+							uses prefix-sid-cfg;
+							description
+							 "Parameters associated with IPv6 prefix SID";
+						}
+						description
+						 "Prefix SID configuration.";
+					}
+					description
+					 "List of interfaces.";
+				}
+				description
+				 "Interface configuration.";
+			}
+			description
+			"segment routing global config.";	
+		}
+	}
+				
+				
+	augment "/rt:routing/rt:routing-instance/rt:routing-protocols" +
+			  "/rt:routing-protocol/isis:isis/isis:instance" {
+		when "rt:type = 'isis:isis'" {
+		  description
+			"This augment ISIS routing protocol when used";
+		}
+		description
+		 "This augments ISIS protocol configuration
+		  with segment routing.";
+		  
+		uses controlplane-cfg;
+	}
+	
+	augment "/rt:routing/rt:routing-instance/rt:routing-protocols" +
+			  "/rt:routing-protocol/ospf:ospf/ospf:instance" {
+		when "rt:type = 'ospf:ospfv2' or rt:type = 'ospf:ospfv3'" {
+		  description
+			"This augment ISIS routing protocol when used";
+		}
+		description
+		 "This augments ISIS protocol configuration
+		  with segment routing.";
+		uses controlplane-cfg;
+	}
+	
+	
+	/* Operational states */
+	
+	augment "/rt:routing-state/rt:routing-instance" {
+		description
+		 "This augments the operational states
+		  with segment-routing.";
+		container segment-routing {
+			list label-blocks {
+				leaf lower-bound {
+					type uint32;
+					description
+					 "Lower bound of the label block.";
+				}
+				leaf upper-bound {
+					type uint32;
+					description
+					 "Upper bound of the label block.";
+				}
+				leaf size {
+					type uint32;
+					description
+					 "Number of indexes in the block.";
+				}
+				leaf free {
+					type uint32;
+					description
+					 "Number of indexes free in the block.";
+				}
+				leaf used {
+					type uint32;
+					description
+					 "Number of indexes used in the block.";
+				}
+				description
+				 "List of labels blocks currently
+				 in use.";
+			}
+			
+			container global-sid-list {
+				list sid {
+					key "target sid source source-protocol binding-type";
+					ordered-by system;
+					
+					leaf target {
+						type string;
+						description
+						 "Defines the target of the binding.
+						 It can be a prefix or something else.";
+					}
+					leaf sid {
+						type uint32;
+						description
+						 "Index associated with the prefix.";
+					}
+					leaf algorithm {
+						type uint8;
+						description
+						 "Algorithm to be used for the prefix
+						 SID.";
+					}
+					leaf source {
+						type inet:ip-address;
+						description
+						 "IP address of the router than own
+						  the binding.";
+					}
+					leaf used {
+						type boolean;
+						description
+						 "Defines if the binding is used
+						  in forwarding plane.";
+					}
+					leaf source-protocol {
+						type leafref {
+							path "/rt:routing-state/rt:routing-instance/" +
+							"rt:routing-protocols/rt:routing-protocol/rt:name";
+						}
+						description
+						 "Rtg protocol that owns the binding";
+					}
+					leaf binding-type {
+						type enumeration {
+							enum prefix-sid {
+								description
+								 "Binding is learned from
+								 a prefix SID.";
+							}
+							enum binding-tlv {
+								description
+								 "Binding is learned from
+								 a binding TLV.";
+							}
+						}
+						description
+						 "Type of binding.";
+					}
+					description
+						"Binding.";
+
+				}
+				description
+				 "List of prefix and SID associations.";
+			}
+			description
+			 "Segment routing operational states.";
+		}
+	}
+	
+	
+	/* Notifications */
+	
+	notification segment-routing-global-sid-collision {
+		leaf received-target {
+			type string;
+			description
+			"Target received in the controlplane that caused SID collision.";
+		}
+		leaf original-target {
+			type string;
+			description
+			"Target already available in database that have the same SID
+			as the received target.";
+		}
+		leaf index {
+			type uint32;
+			description
+			"Value of the index used by two different prefixes.";
+		}
+		leaf routing-protocol {
+			type leafref {
+				path "/rt:routing-state/rt:routing-instance/" +
+				"rt:routing-protocols/rt:routing-protocol/rt:name";
+			}
+			description
+			 "Routing protocol reference that received the event.";
+		}
+		description
+		  "This notification is sent when a new mapping is learned
+		  , containing mapping 
+		  where the SID is already used.
+		  The notification generation must be throttled with at least
+		   a 5 second gap. ";
+	}
+	notification segment-routing-index-out-of-range {
+		leaf received-target {
+			type string;
+			description
+			"Target received in the controlplane that caused SID collision.";
+		}
+		leaf received-index {
+			type uint32;
+			description
+			"Value of the index received.";
+		}
+		leaf routing-protocol {
+			type leafref {
+				path "/rt:routing-state/rt:routing-instance/" +
+				"rt:routing-protocols/rt:routing-protocol/rt:name";
+			}
+			description
+			 "Routing protocol reference that received the event.";
+		}
+		description
+		  "This notification is sent when a binding
+		  is received, containing a segment index
+		  which is out of the local configured ranges.
+		  The notification generation must be throttled with at least
+		   a 5 second gap. ";
+	}
+	
+}
+
+&lt;CODE ENDS&gt;</artwork>
+
+      </figure>
+
+    </section>
+	
+    <section anchor="Security" title="Security Considerations" toc="default">
+    <t>TBD.</t> 
+    </section>
+
+    <section anchor="Acknowledgements" title="Acknowledgements" toc="default">
+      <t>TBD.</t>
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations" toc="default">
+      <t>TBD.</t>
+    </section>
+
+  </middle>
+  <back>
+    <references title="Normative References">
+      
+
+<reference anchor="RFC2119">
+
+<front>
+<title abbrev="RFC Key Words">Key words for use in RFCs to Indicate Requirement Levels</title>
+<author initials="S." surname="Bradner" fullname="Scott Bradner">
+<organization>Harvard University</organization>
+<address>
+<postal>
+<street>1350 Mass. Ave.</street>
+<street>Cambridge</street>
+<street>MA 02138</street></postal>
+<phone>- +1 617 495 3864</phone>
+<email>sob@harvard.edu</email></address></author>
+<date year="1997" month="March"/>
+<area>General</area>
+<keyword>keyword</keyword>
+<abstract>
+<t>
+   In many standards track documents several words are used to signify
+   the requirements in the specification.  These words are often
+   capitalized.  This document defines these words as they should be
+   interpreted in IETF documents.  Authors who follow these guidelines
+   should incorporate this phrase near the beginning of their document:
+
+<list>
+<t>
+      The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described in
+      RFC 2119.
+</t></list></t>
+<t>
+   Note that the force of these words is modified by the requirement
+   level of the document in which they are used.
+</t></abstract></front>
+
+<seriesInfo name="BCP" value="14"/>
+<seriesInfo name="RFC" value="2119"/>
+<format type="TXT" octets="4723" target="http://www.rfc-editor.org/rfc/rfc2119.txt"/>
+<format type="HTML" octets="17970" target="http://xml.resource.org/public/rfc/html/rfc2119.html"/>
+<format type="XML" octets="5777" target="http://xml.resource.org/public/rfc/xml/rfc2119.xml"/>
+</reference>
+
+      
+
+<reference anchor="RFC6020">
+
+<front>
+<title>YANG - A Data Modeling Language for the Network Configuration Protocol (NETCONF)</title>
+<author initials="M." surname="Bjorklund" fullname="M. Bjorklund">
+<organization/></author>
+<date year="2010" month="October"/>
+<abstract>
+<t>YANG is a data modeling language used to model configuration and state data manipulated by the Network Configuration Protocol (NETCONF), NETCONF remote procedure calls, and NETCONF notifications. [STANDARDS-TRACK]</t></abstract></front>
+
+<seriesInfo name="RFC" value="6020"/>
+<format type="TXT" octets="324178" target="http://www.rfc-editor.org/rfc/rfc6020.txt"/>
+</reference>
+
+      
+
+<reference anchor="RFC6241">
+
+<front>
+<title>Network Configuration Protocol (NETCONF)</title>
+<author initials="R." surname="Enns" fullname="R. Enns">
+<organization/></author>
+<author initials="M." surname="Bjorklund" fullname="M. Bjorklund">
+<organization/></author>
+<author initials="J." surname="Schoenwaelder" fullname="J. Schoenwaelder">
+<organization/></author>
+<author initials="A." surname="Bierman" fullname="A. Bierman">
+<organization/></author>
+<date year="2011" month="June"/>
+<abstract>
+<t>The Network Configuration Protocol (NETCONF) defined in this document provides mechanisms to install, manipulate, and delete the configuration of network devices.  It uses an Extensible Markup Language (XML)-based data encoding for the configuration data as well as the protocol messages.  The NETCONF protocol operations are realized as remote procedure calls (RPCs).  This document obsoletes RFC 4741. [STANDARDS-TRACK]</t></abstract></front>
+
+<seriesInfo name="RFC" value="6241"/>
+<format type="TXT" octets="209465" target="http://www.rfc-editor.org/rfc/rfc6241.txt"/>
+</reference>
+
+      
+
+<reference anchor="RFC6242">
+
+<front>
+<title>Using the NETCONF Protocol over Secure Shell (SSH)</title>
+<author initials="M." surname="Wasserman" fullname="M. Wasserman">
+<organization/></author>
+<date year="2011" month="June"/>
+<abstract>
+<t>This document describes a method for invoking and running the Network Configuration Protocol (NETCONF) within a Secure Shell (SSH) session as an SSH subsystem.  This document obsoletes RFC 4742. [STANDARDS-TRACK]</t></abstract></front>
+
+<seriesInfo name="RFC" value="6242"/>
+<format type="TXT" octets="22704" target="http://www.rfc-editor.org/rfc/rfc6242.txt"/>
+</reference>
+
+      
+
+<reference anchor="RFC6536">
+
+<front>
+<title>Network Configuration Protocol (NETCONF) Access Control Model</title>
+<author initials="A." surname="Bierman" fullname="A. Bierman">
+<organization/></author>
+<author initials="M." surname="Bjorklund" fullname="M. Bjorklund">
+<organization/></author>
+<date year="2012" month="March"/>
+<abstract>
+<t>The standardization of network configuration interfaces for use with the Network Configuration Protocol (NETCONF) requires a structured and secure operating environment that promotes human usability and multi-vendor interoperability.  There is a need for standard mechanisms to restrict NETCONF protocol access for particular users to a pre-configured subset of all available NETCONF protocol operations and content.  This document defines such an access control model. [STANDARDS-TRACK]</t></abstract></front>
+
+<seriesInfo name="RFC" value="6536"/>
+<format type="TXT" octets="90803" target="http://www.rfc-editor.org/rfc/rfc6536.txt"/>
+</reference>
+
+	  
+
+<reference anchor="I-D.ietf-spring-segment-routing">
+<front>
+<title>Segment Routing Architecture</title>
+
+<author initials="C" surname="Filsfils" fullname="Clarence Filsfils">
+    <organization/>
+</author>
+
+<author initials="S" surname="Previdi" fullname="Stefano Previdi">
+    <organization/>
+</author>
+
+<author initials="A" surname="Bashandy" fullname="Ahmed Bashandy">
+    <organization/>
+</author>
+
+<author initials="B" surname="Decraene" fullname="Bruno Decraene">
+    <organization/>
+</author>
+
+<author initials="S" surname="Litkowski" fullname="Stephane Litkowski">
+    <organization/>
+</author>
+
+<author initials="M" surname="Horneffer" fullname="Martin Horneffer">
+    <organization/>
+</author>
+
+<author initials="R" surname="Shakir" fullname="Rob Shakir">
+    <organization/>
+</author>
+
+<author initials="J" surname="Tantsura" fullname="Jeff Tantsura">
+    <organization/>
+</author>
+
+<author initials="E" surname="Crabbe" fullname="Edward Crabbe">
+    <organization/>
+</author>
+
+<date month="February" day="6" year="2015"/>
+
+<abstract><t>Segment Routing (SR) leverages the source routing paradigm.  A node steers a packet through an ordered list of instructions, called segments.  A segment can represent any instruction, topological or service-based.  A segment can have a local semantic to an SR node or global within an SR domain.  SR allows to enforce a flow through any topological path and service chain while maintaining per-flow state only at the ingress node to the SR domain.  Segment Routing can be directly applied to the MPLS architecture with no change on the forwarding plane.  A segment is encoded as an MPLS label.  An ordered list of segments is encoded as a stack of labels. The segment to process is on the top of the stack.  Upon completion of a segment, the related label is popped from the stack.  Segment Routing can be applied to the IPv6 architecture, with a new type of routing extension header.  A segment is encoded as an IPv6 address.  An ordered list of segments is encoded as an ordered list of IPv6 addresses in the routing extension header.  The segment to process is indicated by a pointer in the routing extension header. Upon completion of a segment, the pointer is incremented.</t></abstract>
+
+</front>
+
+<seriesInfo name="Internet-Draft" value="draft-ietf-spring-segment-routing-01"/>
+<format type="TXT" target="http://www.ietf.org/internet-drafts/draft-ietf-spring-segment-routing-01.txt"/>
+</reference>
+
+	  
+
+<reference anchor="I-D.ietf-isis-segment-routing-extensions">
+<front>
+<title>IS-IS Extensions for Segment Routing</title>
+
+<author initials="S" surname="Previdi" fullname="Stefano Previdi">
+    <organization/>
+</author>
+
+<author initials="C" surname="Filsfils" fullname="Clarence Filsfils">
+    <organization/>
+</author>
+
+<author initials="A" surname="Bashandy" fullname="Ahmed Bashandy">
+    <organization/>
+</author>
+
+<author initials="H" surname="Gredler" fullname="Hannes Gredler">
+    <organization/>
+</author>
+
+<author initials="S" surname="Litkowski" fullname="Stephane Litkowski">
+    <organization/>
+</author>
+
+<author initials="B" surname="Decraene" fullname="Bruno Decraene">
+    <organization/>
+</author>
+
+<author initials="J" surname="Tantsura" fullname="Jeff Tantsura">
+    <organization/>
+</author>
+
+<date month="October" day="25" year="2014"/>
+
+<abstract><t>Segment Routing (SR) allows for a flexible definition of end-to-end paths within IGP topologies by encoding paths as sequences of topological sub-paths, called "segments".  These segments are advertised by the link-state routing protocols (IS-IS and OSPF).  This draft describes the necessary IS-IS extensions that need to be introduced for Segment Routing.</t></abstract>
+
+</front>
+
+<seriesInfo name="Internet-Draft" value="draft-ietf-isis-segment-routing-extensions-03"/>
+<format type="TXT" target="http://www.ietf.org/internet-drafts/draft-ietf-isis-segment-routing-extensions-03.txt"/>
+</reference>
+
+	  
+
+<reference anchor="I-D.psenak-ospf-segment-routing-extensions">
+<front>
+<title>OSPF Extensions for Segment Routing</title>
+
+<author initials="P" surname="Psenak" fullname="Peter Psenak">
+    <organization/>
+</author>
+
+<author initials="S" surname="Previdi" fullname="Stefano Previdi">
+    <organization/>
+</author>
+
+<author initials="C" surname="Filsfils" fullname="Clarence Filsfils">
+    <organization/>
+</author>
+
+<author initials="H" surname="Gredler" fullname="Hannes Gredler">
+    <organization/>
+</author>
+
+<author initials="R" surname="Shakir" fullname="Rob Shakir">
+    <organization/>
+</author>
+
+<author initials="W" surname="Henderickx" fullname="Wim Henderickx">
+    <organization/>
+</author>
+
+<author initials="J" surname="Tantsura" fullname="Jeff Tantsura">
+    <organization/>
+</author>
+
+<date month="June" day="5" year="2014"/>
+
+<abstract><t>Segment Routing (SR) allows for a flexible definition of end-to-end paths within IGP topologies by encoding paths as sequences of topological sub-paths, called "segments".  These segments are advertised by the link-state routing protocols (IS-IS and OSPF).  This draft describes the necessary OSPF extensions that need to be introduced for Segment Routing.</t></abstract>
+
+</front>
+
+<seriesInfo name="Internet-Draft" value="draft-psenak-ospf-segment-routing-extensions-05"/>
+<format type="TXT" target="http://www.ietf.org/internet-drafts/draft-psenak-ospf-segment-routing-extensions-05.txt"/>
+</reference>
+
+	  
+
+<reference anchor="I-D.psenak-ospf-segment-routing-ospfv3-extension">
+<front>
+<title>OSPFv3 Extensions for Segment Routing</title>
+
+<author initials="P" surname="Psenak" fullname="Peter Psenak">
+    <organization/>
+</author>
+
+<author initials="S" surname="Previdi" fullname="Stefano Previdi">
+    <organization/>
+</author>
+
+<author initials="C" surname="Filsfils" fullname="Clarence Filsfils">
+    <organization/>
+</author>
+
+<author initials="H" surname="Gredler" fullname="Hannes Gredler">
+    <organization/>
+</author>
+
+<author initials="R" surname="Shakir" fullname="Rob Shakir">
+    <organization/>
+</author>
+
+<author initials="W" surname="Henderickx" fullname="Wim Henderickx">
+    <organization/>
+</author>
+
+<author initials="J" surname="Tantsura" fullname="Jeff Tantsura">
+    <organization/>
+</author>
+
+<date month="July" day="2" year="2014"/>
+
+<abstract><t>Segment Routing (SR) allows for a flexible definition of end-to-end paths within IGP topologies by encoding paths as sequences of topological sub-paths, called "segments".  These segments are advertised by the link-state routing protocols (IS-IS and OSPF).  This draft describes the necessary OSPFv3 extensions that need to be introduced for Segment Routing.</t></abstract>
+
+</front>
+
+<seriesInfo name="Internet-Draft" value="draft-psenak-ospf-segment-routing-ospfv3-extension-02"/>
+<format type="TXT" target="http://www.ietf.org/internet-drafts/draft-psenak-ospf-segment-routing-ospfv3-extension-02.txt"/>
+</reference>
+
+    </references>
+  </back>
+</rfc>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rfc SYSTEM ".tools/schema/rfc2629.dtd" [
+<!ENTITY % netmod SYSTEM ".tools/bplate/netmod.ent">
+%netmod;
+<!ENTITY % figures SYSTEM "figures.ent">
+%figures;
+<!ENTITY % yang SYSTEM "yang.ent">
+%yang;
+<!-- Add other entity declarations here, e.g. for bibliographic items: -->
+<!ENTITY RFC6020 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6020.xml">
+]>
+
+<?rfc strict="yes"?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+
+<rfc category="std">
+  <front>
+    <title abbrev="i-d-abbrev">I-D Title</title>
+    <author fullname="Albert U. Thor" initials="A. U." surname="Thor">
+      <organization>Example, Inc.</organization>
+      <address>
+        <email>a.u.thor@example.com</email>
+      </address>
+    </author>
+    <date year="YYYY-MM-DD"/>
+    <area/>
+    <workgroup>Foo Working Group</workgroup>
+
+    <abstract>
+      <t></t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="introduction" title="Introduction">
+      <t>
+	<!-- Use this entity reference for including the standard text
+	     explaining the symbols in YANG tree diagrams. -->
+	&treesym;
+      </t>
+
+      <!-- Figures are included like this (entity name = file name):
+
+      <figure>
+	&foo-model.tree;
+      </figure>
+
+      Files with figures and YANG modules (see below) should not
+      contain the <artwork> element - it is added automatically. 
+      -->
+
+    </section>
+
+    <section anchor="yang" title="YANG Module">
+
+      <t></t>
+
+      <!-- YANG modules are included this way:
+
+      <figure>
+	&ietf-foo.yang;
+      </figure>
+
+      The <CODE BEGIN/END> delimiters are also added automatically.
+      -->
+
+    </section>
+
+    <section anchor="iana" title="IANA Considerations">
+      <t></t>
+    </section>
+
+    <section anchor="security" title="Security Considerations">
+      <t></t>
+
+    </section>
+
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <!-- This is for the entity appearing in the DTD declaration. -->
+      &RFC6020;
+    </references>
+
+    <section anchor="rpc-example" title="Example: NETCONF &lt;get&gt; Reply">
+      <t></t>
+
+      <!-- Example XML documents can also be included in the same way:
+
+      <figure>
+	&example-get-reply.xml;
+      </figure>
+      -->
+
+    </section>
+  </back>
+</rfc>

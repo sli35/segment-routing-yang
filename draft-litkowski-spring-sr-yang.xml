@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM ".tools/schema/rfc2629.dtd" [
+<!ENTITY % netmod SYSTEM ".tools/bplate/netmod.ent">
+%netmod;
+<!ENTITY % figures SYSTEM "figures.ent">
+%figures;
+<!ENTITY % yang SYSTEM "yang.ent">
+%yang;
+<!ENTITY RFC2119 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC6020 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6020.xml">
+<!ENTITY RFC6241 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6241.xml">
+<!ENTITY RFC6242 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6242.xml">
+<!ENTITY RFC6536 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6536.xml">
+<!ENTITY ISIS-SR SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-isis-segment-routing-extensions.xml">
+<!ENTITY OSPF-SR SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.psenak-ospf-segment-routing-extensions.xml">
+<!ENTITY OSPFv3-SR SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.psenak-ospf-segment-routing-ospfv3-extension.xml">
+<!ENTITY ARCH-SR SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-spring-segment-routing.xml">
+]>
+
+<?rfc strict="yes" ?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="4"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+
+<rfc category="std">
+  <front>
+    <title abbrev="sr-yang-cfg">YANG Data Model for Segment Routing</title>
+    <author fullname="Stephane Litkowski" initials="S" surname="Litkowski">
+      <organization>Orange Business Service</organization>
+      <address>
+        <email>stephane.litkowski@orange.com</email>
+      </address>
+    </author>
+	<author fullname="Acee Lindem" initials="A" surname="Lindem">
+      <organization>Cisco Systems</organization>
+      <address>
+        <email>acee@cisco.com</email>
+      </address>
+    </author>
+	<author fullname="Pushpasis Sarkar" initials="P" surname="Sarkar">
+      <organization>Juniper Networks</organization>
+      <address>
+        <email>psarkar@juniper.net</email>
+      </address>
+    </author>
+	<author fullname="Ing-Wher Chen" initials="I" surname="Chen">
+      <organization>Ericsson</organization>
+      <address>
+        <email>ing-wher.chen@ericsson.com</email>
+      </address>
+    </author>
+    <date year="2015"/>
+    <area/>
+    <workgroup>SPRING Working Group</workgroup>
+
+    <abstract>
+      <t>
+	  This document defines a YANG data model for segment routing configuration and operation.
+	  This YANG model is intended to be used on network elements to configure or operate segment routing.
+	  </t>
+    </abstract>
+    <note title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described
+      in <xref target="RFC2119"/>.</t>
+    </note>
+  </front>
+  <middle>
+    <section anchor="introduction" title="Introduction">
+      <t>
+      This document defines a YANG data model for segment routing configuration and operation.</t>
+      
+      <section anchor="tree-info" title="Tree diagram">
+        <t>A simplified graphical representation of the data model is
+        presented in <xref target="design"/>.</t>
+
+	&treesym;
+
+      </section>
+    </section>
+	
+
+	<section anchor="design" title="Design of the Data Model">
+
+      <figure>
+		&ietf-segment-routing.tree;
+      </figure>
+	  <t>The organization of this module and protocol modules have to be discussed.</t>
+	</section>
+
+	<section anchor="how" title="Configuration">
+	<t>
+	This module augments the "/rt:routing/rt:routing-instance:" with a segment-routing container.
+	This container defines all the configuration parameters related to segment-routing for this particular routing-instance.
+	</t>
+	
+	<t>
+	The segment-routing configuration is split in global configuration and interface configuration.
+	</t>
+	<t>The global configuration defines :
+	<list style="symbols">
+	<t>segment-routing transport type : the standard model supports only MPLS as segment-routing dataplane. The transport-type is defined
+	only once for a particular routing-instance and is agnostic to the control plane used. Only a single transport-type is supported now.</t>
+	<t>bindings : defines how external informations may be advertised as a segment ID. The current version supports the mapping-server where static bindings can
+	be defined (prefix to SID bindings). Configuration of bindings does not allow advertisement of those bindings. Advertisement must be controlled by each controlplane.</t>
+	<t>SRGB (Segment Routing Global Block) : defines a list of label blocks defined as pair of lower-bound/upper-bound where the node will pick up for Prefix-SID.
+	The SRGB is also agnostic to the controlplane to be used. So all controlplanes will have to advertise the same SRGB.</t>
+	</list>
+	</t>
+	<t>The interface configuration defines :
+	<list style="symbols">
+	<t>Adjacency SID properties</t>
+	<t>Prefix SID properties</t>
+	</list>
+	</t>
+		<section anchor="adj-cfg" title="Adjacency SID properties">
+		<t>
+		In case of parallel IP links between routers, an additional Adjacency SID may be advertised for each parallel adjacency with a common value.
+		The "authorize-bundle" configuration defines if operator wants to enable such behavior.
+		</t>
+		<t>
+		The "advertise-protection" defines how protection of an interface should be advertised. It does not control the activation or deactivation of the protection.
+		If "single" option is used, a single Adj-SID will be added to the interface. If the interface is protected, the B flag of the adjacency will reflect this state.
+		If "dual" option is used and if the interface is protected, two adjacency segments will be associated with the adjacencies present on the interface. One Adj-SID will always have B unset, the other will have B set.
+		This option is intended to be used in case of traffic engineering where a path must use protected segments or non protected segments.
+		</t>
+		</section>
+		<section anchor="prefix-cfg" title="Prefix SID properties">
+		<t>
+		An interface may own IP prefixes. By default, no prefix SID will be advertised for any IP prefix owned by the interface.
+		</t>
+		<t>When adding "prefix-sid" in the interface configuration, the operator can control the advertisement of a prefix SID.</t>
+		<t>The operator can control advertisement of prefix SID independently for IPv4 and IPv6. Operator is required to set a prefix-sid value.</t>
+		<t>The value can be expressed as an index (default), or an absolute value. Operator can also control if the node flag must be set for the prefix. As the router owns the prefix, the default value is to advertise node flag as set.</t>
+		<t>The last-hop-behavior commands the PHP behavior : explicit-null, php or non php.</t>
+		</section>
+	</section>
+	<section anchor="cp" title="Control plane configuration">
+	<t>
+	Activation of segment-routing extensions for a particular control plane is done by augmenting routing-protocol configuration with segment-routing.
+	</t>
+	<t>The "enabled" leaf permits to active advertisement of segment-routing extensions within the routing protocol.</t>
+	<t>The "binding" container defines the ability for the routing protocol to advertise or receive bindings.</t>
+	<t>This model supports ISIS (<xref target="I-D.ietf-isis-segment-routing-extensions"/>) and OSPF as controlplane (<xref target="I-D.psenak-ospf-segment-routing-extensions"/> and <xref target="I-D.psenak-ospf-segment-routing-ospfv3-extension"/>) for segment-routing.</t>
+	</section>
+	<section anchor="states" title="States">
+	<t>
+	The operational states currently contains information about usage of allocated label blocks. 
+	</t>
+	<t>It also provides information on global SID bindings. A list of all globally allocated SIDs is provided associated with information about the binding.</t>
+	</section>
+	<section anchor="notif" title="Notifications">
+	<t>
+	The model proposes two notifications for segment-routing. 
+	<list style="symbols">
+	<t>segment-routing-global-sid-collision : must be raised when a new learning through controlplane has an index which is already associated with another target.</t>
+	<t>segment-routing-index-out-of-range : must be raised when a new learning through controlplane has an index which is outside the SRGB configured on the node.</t>
+	</list>
+	</t>
+	</section>
+    <section anchor="yang" title="YANG Module">
+
+      <figure>
+	&ietf-segment-routing.yang;
+      </figure>
+
+    </section>
+	
+    <section anchor="Security" title="Security Considerations">
+    <t>TBD.</t> 
+    </section>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>TBD.</t>
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>TBD.</t>
+    </section>
+
+  </middle>
+  <back>
+    <references title="Normative References">
+      &RFC2119;
+      &RFC6020;
+      &RFC6241;
+      &RFC6242;
+      &RFC6536;
+	  &ARCH-SR;
+	  &ISIS-SR;
+	  &OSPF-SR;
+	  &OSPFv3-SR;
+    </references>
+  </back>
+</rfc>

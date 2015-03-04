@@ -1,0 +1,13 @@
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+<capabilities>
+<capability>urn:ietf:params:netconf:base:1.1</capability>
+<capability>urn:ietf:params:xml:ns:yang:ietf-segment-routing?module=ietf-segment-routing&amp;revision=2015-02-27&amp;features=</capability>
+<!-- capabilities of external modules -->
+<capability>urn:ietf:params:xml:ns:yang:ietf-isis?module=ietf-isis</capability>
+<capability>urn:ietf:params:xml:ns:yang:ietf-routing?module=ietf-routing&amp;revision=2014-05-24&amp;features=multiple-ribs,multipath-routes</capability>
+<capability>urn:ietf:params:xml:ns:yang:ietf-interfaces?module=ietf-interfaces&amp;revision=2014-05-08&amp;features=arbitrary-names,pre-provisioning,if-mib</capability>
+<capability>urn:ietf:params:xml:ns:yang:ietf-ip?module=ietf-ip&amp;revision=2014-06-16&amp;features=ipv4-non-contiguous-netmasks,ipv6-privacy-autoconf</capability>
+<capability>urn:ietf:params:xml:ns:yang:iana-if-type?module=iana-if-type&amp;revision=2014-05-08&amp;features=</capability>
+<capability>urn:ietf:params:xml:ns:yang:ietf-ipv4-unicast-routing?module=ietf-ipv4-unicast-routing&amp;revision=2014-05-24&amp;features=</capability>
+</capabilities>
+</hello>

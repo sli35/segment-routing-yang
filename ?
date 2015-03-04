@@ -1,0 +1,248 @@
+module ietf-l3vpn-service {
+	namespace "urn:ietf:params:xml:ns:yang:ietf-l3vpn-service";
+	
+	prefix l3vpn-svc;
+	
+	import ietf-routing {
+            prefix "rt";
+        }
+
+	import ietf-inet-types {
+		prefix inet;
+	}
+	
+	import ietf-yang-types {
+		prefix yang;
+	}
+	
+	organization
+	 "IETF ISIS Working Group";
+	 
+	contact
+		"WG List:	&lt;mailto:@ietf.org&gt;
+		
+		Editor:		
+
+		";
+	
+	description 
+		"The YANG module defines a generic service configuration model for 
+		Layer 3 VPN common across all of the vendor implementations.";
+
+	
+	revision 2015-02-05 {
+		description "Initial revision.";
+		reference "draft-...";
+	}
+
+	identity management {
+		description
+		 "Base identity for site management scheme.";
+	}
+	identity comanaged {
+		base management;
+		description
+		 "Base identity for comanaged site.";	 
+	}
+	identity customer-managed {
+		base management;
+		description
+		 "Base identity for customer managed site.";	 
+	}
+	identity provider-managed {
+		base management;
+		description
+		 "Base identity for provider managed site.";	 
+	}
+
+	identity site-availability {
+		description
+		 "Base identity for site availability.";
+	}
+	identity loadsharing {
+			base site-availability;
+			description
+			 "Identity for loadsharing site.";
+	}
+	identity loadsharing-ibgp {
+			base loadsharing;
+			description
+			 "Identity for ECMP ibgp based loadsharing site.";
+	}
+	identity loadsharing-eibgp {
+			base loadsharing;
+			description
+			 "Identity for ECMP eibgp based loadsharing site.";
+	}
+	identity primary-backup {
+			base site-availability;
+			description
+			 "Identity for primary-backup site.";
+	}
+	identity single {
+			base site-availability;
+			description
+			 "Identity for single site.";
+	}
+	
+	
+	list vpn-svc {
+		key name;
+		
+		leaf name {
+			type string;
+			description
+			 "Name of the VPN.";
+		}
+		leaf customer-name {
+			type string;
+			description
+			 "Name of the customer.";
+		}
+		
+	}
+	
+	list sites {
+		key site-id;
+		
+		leaf site-id {
+			type string;
+			description
+				"Identifier of the site.";
+		}
+		
+		
+		leaf vpn {
+			type leafref;
+		}
+		
+		list routing-protocols {
+			leaf type {
+				type identityref {
+					base rt:routing-protocol;
+				}
+			}
+			leaf bfd-enabled {
+				type boolean;
+				description
+				 "BFD activation";
+			}
+			description
+			 "List of routing protocols used on the site.";
+		}
+		container authentication {
+			description
+			 "Authentication parameters";
+		}
+		
+		container availability {
+			leaf availability-type {
+				type identityref {
+					base site-availability;
+				}
+				description
+				 "Type of availability, ex : single, backup, loadsharing";
+			}
+			leaf loadsharing-type {
+				type identityref {
+					base loadsharing;
+				}
+			}
+			description
+			 "Site availability parameters.";
+		}
+		container connection {
+			
+			list address-family {
+				key	af;
+				
+				leaf af {
+					type identity-ref {
+						base rt:address-family;
+					}
+				}
+				container addresses {
+					leaf subnet-length {
+						type uint8;
+						units bits;
+						description
+						 "Mask length in bits.";
+					}
+					leaf customer {
+						type inet:ipv4-address;
+					}
+					leaf provider {
+						type inet:ipv4-address;
+					}
+				}
+				description
+				 "Address-family specific configuration.";
+			}
+			leaf qos-profile {
+				type string;
+				description
+				 "QoS profile to be used";
+			}
+			leaf svc-bandwidth {
+				type uint32;
+				units bps;
+				description
+				 "Service bandwidth of the connection.";
+			}
+			leaf svc-mtu {
+				type uint16;
+				units bytes;
+				description
+				 "MTU at service level.";
+			}
+			description
+			 "Parameters of the connection";
+		}
+		leaf management {
+			type identityref {
+				base management;
+			}
+		}
+		container customer {
+			
+			leaf name {
+				type string;
+				description
+				 "Name of the customer router.";
+			}
+			leaf autonomous-system {
+				type uint32;
+				description
+				 "AS number.";
+			}
+			list lan-prefixes {
+				description "
+					List of LAN prefixes for the site.
+					";
+			}
+			
+			description
+			 "Customer premise configuration.";
+		}
+		container provider {
+			leaf name {
+				type string;
+				description
+				 "Name of the provider router.";
+			}
+			leaf vrf {
+				type leafref;
+			}
+			leaf autonomous-system {
+				type uint32;
+				description
+				 "AS number.";
+			}
+			description
+			 "Provider premise configuration.";
+		}
+		description "List of sites.";
+	}
+	
+	
+}

@@ -1,0 +1,1401 @@
+module: ietf-segment-routing
+augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol/ospf:ospf/ospf:instance:
+   +--rw segment-routing
+      +--rw enabled?    boolean
+      +--rw bindings
+         +--rw advertise?   boolean
+         +--rw receive?     boolean
+notifications:
+   +---n segment-routing-global-sid-collision    
+   |  +--ro received-target?    string
+   |  +--ro original-target?    string
+   |  +--ro index?              uint32
+   |  +--ro routing-protocol?   leafref
+   +---n segment-routing-index-out-of-range      
+      +--ro received-target?    string
+      +--ro received-index?     uint32
+      +--ro routing-protocol?   leafref
+module: ietf-isis
+rpcs:
+   +---x clear-adjacency    
+   |  +--ro input     
+   |     +--ro routing-instance-name             rt:routing-instance-state-ref
+   |     +--ro routing-protocol-instance-name    instance-state-ref
+   |     +--ro level?                            level
+   |     +--ro interface?                        string
+   +---x clear-database     
+      +--ro input     
+         +--ro routing-instance-name             rt:routing-instance-state-ref
+         +--ro routing-protocol-instance-name    instance-state-ref
+         +--ro level?                            level
+notifications:
+   +---n database-overload                 
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro overload?         enumeration
+   +---n lsp-too-large                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro pdu-size?              uint32
+   |  +--ro lsp-id?                lsp-id
+   +---n corrupted-lsp-detected            
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro lsp-id?           lsp-id
+   +---n attempt-to-exceed-max-sequence    
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro lsp-id?           lsp-id
+   +---n id-len-mismatch                   
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro pdu-field-len?         uint8
+   |  +--ro raw-pdu?               binary
+   +---n max-area-addresses-mismatch       
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro max-area-addresses?    uint8
+   |  +--ro raw-pdu?               binary
+   +---n own-lsp-purge                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   +---n sequence-number-skipped           
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   +---n authentication-type-failure       
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n authentication-failure            
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n version-skew                      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro protocol-version?      uint8
+   |  +--ro raw-pdu?               binary
+   +---n area-mismatch                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n rejected-adjacency                
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro reason?                string
+   +---n protocols-supported-mismatch      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro protocols*             uint8
+   +---n lsp-error-detected                
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro error-offset?          uint32
+   |  +--ro tlv-type?              uint8
+   +---n adjacency-change                  
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro neighbor?              string
+   |  +--ro neighbor-system-id?    system-id
+   |  +--ro level?                 level
+   |  +--ro state?                 enumeration
+   |  +--ro reason?                string
+   +---n lsp-received                      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   |  +--ro sequence?              uint32
+   |  +--ro received-timestamp?    yang:timestamp
+   |  +--ro neighbor-system-id?    system-id
+   +---n lsp-generation                    
+      +--ro instance-name?    string
+      +--ro instance-level?   level
+      +--ro lsp-id?           lsp-id
+      +--ro sequence?         uint32
+      +--ro send-timestamp?   yang:timestamp
+module: ietf-routing
+   +--ro routing-state
+   |  +--ro routing-instance* [name]
+   |  |  +--ro name                  string
+   |  |  +--ro id                    uint64
+   |  |  +--ro type?                 identityref
+   |  |  +--ro router-id?            yang:dotted-quad
+   |  |  +--ro default-ribs
+   |  |  |  +--ro default-rib* [address-family]
+   |  |  |     +--ro address-family    identityref
+   |  |  |     +--ro rib-name          rib-state-ref
+   |  |  +--ro interfaces
+   |  |  |  +--ro interface* [name]
+   |  |  |     +--ro name    if:interface-state-ref
+   |  |  +--ro routing-protocols
+   |  |  |  +--ro routing-protocol* [name]
+   |  |  |     +--ro name              string
+   |  |  |     +--ro type              identityref
+   |  |  |     +--ro connected-ribs
+   |  |  |     |  +--ro connected-rib* [rib-name]
+   |  |  |     |     +--ro rib-name         rib-state-ref
+   |  |  |     |     +--ro import-filter?   route-filter-state-ref
+   |  |  |     |     +--ro export-filter?   route-filter-state-ref
+   |  |  |     +--ro isis:isis
+   |  |  |     |  +--ro isis:instance* [routing-instance]
+   |  |  |     |     +--ro isis:routing-instance    rt:routing-instance-ref
+   |  |  |     |     +--ro isis:system-counters
+   |  |  |     |     |  +--ro isis:level* [level]
+   |  |  |     |     |     +--ro isis:level                            level-number
+   |  |  |     |     |     +--ro isis:corrupted-lsps?                  uint32
+   |  |  |     |     |     +--ro isis:authentication-type-fails?       uint32
+   |  |  |     |     |     +--ro isis:authentication-fails?            uint32
+   |  |  |     |     |     +--ro isis:database-overload?               uint32
+   |  |  |     |     |     +--ro isis:own-lsp-purge?                   uint32
+   |  |  |     |     |     +--ro isis:manual-address-drop-from-area?   uint32
+   |  |  |     |     |     +--ro isis:max-sequence?                    uint32
+   |  |  |     |     |     +--ro isis:sequence-number-skipped?         uint32
+   |  |  |     |     |     +--ro isis:id-len-mismatch?                 uint32
+   |  |  |     |     |     +--ro isis:partition-changes?               uint32
+   |  |  |     |     |     +--ro isis:lsp-errors?                      uint32
+   |  |  |     |     |     +--ro isis:spf-runs?                        uint32
+   |  |  |     |     +--ro isis:interfaces
+   |  |  |     |     |  +--ro isis:interfaces* [interface]
+   |  |  |     |     |     +--ro isis:interface          string
+   |  |  |     |     |     +--ro isis:status
+   |  |  |     |     |     |  +--ro isis:circuit-id?            circuit-id
+   |  |  |     |     |     |  +--ro isis:admin-state?           admin-state
+   |  |  |     |     |     |  +--ro isis:oper-state?            oper-state
+   |  |  |     |     |     |  +--ro isis:interface-type?        interface-type
+   |  |  |     |     |     |  +--ro isis:passive?               empty
+   |  |  |     |     |     |  +--ro isis:three-way-handshake?   boolean
+   |  |  |     |     |     |  +--ro isis:mesh-group-enabled?    mesh-group-state
+   |  |  |     |     |     |  +--ro isis:mesh-group?            uint8
+   |  |  |     |     |     |  +--ro isis:level* [level]
+   |  |  |     |     |     |     +--ro isis:level                level
+   |  |  |     |     |     |     +--ro isis:priority?            uint8
+   |  |  |     |     |     |     +--ro isis:hello-multiplier?    uint16
+   |  |  |     |     |     |     +--ro isis:hello-interval?      uint16
+   |  |  |     |     |     |     +--ro isis:dr-hello-interval?   uint32
+   |  |  |     |     |     |     +--ro isis:metric?              empty
+   |  |  |     |     |     +--ro isis:event-counters
+   |  |  |     |     |     |  +--ro isis:adjacency-changes?             uint32
+   |  |  |     |     |     |  +--ro isis:adjacency-number?              uint32
+   |  |  |     |     |     |  +--ro isis:init-fails?                    uint32
+   |  |  |     |     |     |  +--ro isis:adjacency-rejects?             uint32
+   |  |  |     |     |     |  +--ro isis:id-len-mismatch?               uint32
+   |  |  |     |     |     |  +--ro isis:max-area-addresses-mismatch?   uint32
+   |  |  |     |     |     |  +--ro isis:authentication-type-fails?     uint32
+   |  |  |     |     |     |  +--ro isis:authentication-fails?          uint32
+   |  |  |     |     |     |  +--ro isis:lan-dis-changes?               uint32
+   |  |  |     |     |     +--ro isis:packet-counters
+   |  |  |     |     |        +--ro isis:level* [level]
+   |  |  |     |     |           +--ro isis:level      level-number
+   |  |  |     |     |           +--ro isis:iih
+   |  |  |     |     |           |  +--ro isis:in?    uint32
+   |  |  |     |     |           |  +--ro isis:out?   uint32
+   |  |  |     |     |           +--ro isis:ish
+   |  |  |     |     |           |  +--ro isis:in?    uint32
+   |  |  |     |     |           |  +--ro isis:out?   uint32
+   |  |  |     |     |           +--ro isis:esh
+   |  |  |     |     |           |  +--ro isis:in?    uint32
+   |  |  |     |     |           |  +--ro isis:out?   uint32
+   |  |  |     |     |           +--ro isis:lsp
+   |  |  |     |     |           |  +--ro isis:in?    uint32
+   |  |  |     |     |           |  +--ro isis:out?   uint32
+   |  |  |     |     |           +--ro isis:psnp
+   |  |  |     |     |           |  +--ro isis:in?    uint32
+   |  |  |     |     |           |  +--ro isis:out?   uint32
+   |  |  |     |     |           +--ro isis:csnp
+   |  |  |     |     |           |  +--ro isis:in?    uint32
+   |  |  |     |     |           |  +--ro isis:out?   uint32
+   |  |  |     |     |           +--ro isis:unknown
+   |  |  |     |     |              +--ro isis:in?    uint32
+   |  |  |     |     |              +--ro isis:out?   uint32
+   |  |  |     |     +--ro isis:adjacencies
+   |  |  |     |     |  +--ro isis:adjacency*
+   |  |  |     |     |     +--ro isis:interface?                      string
+   |  |  |     |     |     +--ro isis:neighbor-systype?               level
+   |  |  |     |     |     +--ro isis:neighbor-sysid?                 system-id
+   |  |  |     |     |     +--ro isis:neighbor-extended-circuit-id?   extended-circuit-id
+   |  |  |     |     |     +--ro isis:neighbor-snpa?                  snpa
+   |  |  |     |     |     +--ro isis:usage?                          level
+   |  |  |     |     |     +--ro isis:hold-timer?                     uint16
+   |  |  |     |     |     +--ro isis:neighbor-priority?              uint8
+   |  |  |     |     |     +--ro isis:lastuptime?                     yang:timestamp
+   |  |  |     |     |     +--ro isis:state?                          enumeration
+   |  |  |     |     +--ro isis:spf-log
+   |  |  |     |     |  +--ro isis:event* [id]
+   |  |  |     |     |     +--ro isis:id                    uint32
+   |  |  |     |     |     +--ro isis:spf-type?             enumeration
+   |  |  |     |     |     +--ro isis:level?                level-number
+   |  |  |     |     |     +--ro isis:spf-delay?            uint32
+   |  |  |     |     |     +--ro isis:schedule-timestamp?   yang:timestamp
+   |  |  |     |     |     +--ro isis:start-timestamp?      yang:timestamp
+   |  |  |     |     |     +--ro isis:end-timestamp?        yang:timestamp
+   |  |  |     |     |     +--ro isis:trigger-lsp* [lsp]
+   |  |  |     |     |        +--ro isis:lsp         lsp-id
+   |  |  |     |     |        +--ro isis:sequence?   uint32
+   |  |  |     |     +--ro isis:lsp-log
+   |  |  |     |     |  +--ro isis:event* [id]
+   |  |  |     |     |     +--ro isis:id                    uint32
+   |  |  |     |     |     +--ro isis:level?                level-number
+   |  |  |     |     |     +--ro isis:lsp
+   |  |  |     |     |     |  +--ro isis:lsp?        lsp-id
+   |  |  |     |     |     |  +--ro isis:sequence?   uint32
+   |  |  |     |     |     +--ro isis:received-timestamp?   yang:timestamp
+   |  |  |     |     |     +--ro isis:change?               bits
+   |  |  |     |     +--ro isis:database
+   |  |  |     |     |  +--ro isis:level-db* [level]
+   |  |  |     |     |     +--ro isis:level    level-number
+   |  |  |     |     |     +--ro isis:lsp* [lsp-id]
+   |  |  |     |     |        +--ro isis:lsp-id                           lsp-id
+   |  |  |     |     |        +--ro isis:checksum?                        uint16
+   |  |  |     |     |        +--ro isis:remaining-lifetime?              uint16
+   |  |  |     |     |        +--ro isis:sequence?                        uint32
+   |  |  |     |     |        +--ro isis:attributes?                      bits
+   |  |  |     |     |        +--ro isis:is-neighbor
+   |  |  |     |     |        |  +--ro isis:neighbor* [neighbor-id]
+   |  |  |     |     |        |     +--ro isis:neighbor-id       system-id
+   |  |  |     |     |        |     +--ro isis:i-e?              boolean
+   |  |  |     |     |        |     +--ro isis:default-metric?   std-metric
+   |  |  |     |     |        |     +--ro isis:delay-metric
+   |  |  |     |     |        |     |  +--ro isis:metric?      std-metric
+   |  |  |     |     |        |     |  +--ro isis:supported?   boolean
+   |  |  |     |     |        |     +--ro isis:expense-metric
+   |  |  |     |     |        |     |  +--ro isis:metric?      std-metric
+   |  |  |     |     |        |     |  +--ro isis:supported?   boolean
+   |  |  |     |     |        |     +--ro isis:error-metric
+   |  |  |     |     |        |        +--ro isis:metric?      std-metric
+   |  |  |     |     |        |        +--ro isis:supported?   boolean
+   |  |  |     |     |        +--ro isis:authentication
+   |  |  |     |     |        |  +--ro isis:authentication-type?   authentication-type
+   |  |  |     |     |        |  +--ro isis:authentication-key?    string
+   |  |  |     |     |        +--ro isis:extended-is-neighbor
+   |  |  |     |     |        |  +--ro isis:neighbor* [neighbor-id]
+   |  |  |     |     |        |     +--ro isis:neighbor-id             system-id
+   |  |  |     |     |        |     +--ro isis:metric?                 wide-metric
+   |  |  |     |     |        |     +--ro isis:adjacency-segment-id* [value]
+   |  |  |     |     |        |        +--ro isis:flags?         bits
+   |  |  |     |     |        |        +--ro isis:weight?        uint8
+   |  |  |     |     |        |        +--ro isis:neighbor-id?   system-id
+   |  |  |     |     |        |        +--ro isis:value          uint32
+   |  |  |     |     |        +--ro isis:ipv4-internal-reachability
+   |  |  |     |     |        |  +--ro isis:prefixes* [ip-prefix]
+   |  |  |     |     |        |     +--ro isis:up-down?          boolean
+   |  |  |     |     |        |     +--ro isis:i-e?              boolean
+   |  |  |     |     |        |     +--ro isis:ip-prefix         inet:ipv4-address
+   |  |  |     |     |        |     +--ro isis:prefix-len?       uint8
+   |  |  |     |     |        |     +--ro isis:default-metric?   std-metric
+   |  |  |     |     |        |     +--ro isis:delay-metric
+   |  |  |     |     |        |     |  +--ro isis:metric?      std-metric
+   |  |  |     |     |        |     |  +--ro isis:supported?   boolean
+   |  |  |     |     |        |     +--ro isis:expense-metric
+   |  |  |     |     |        |     |  +--ro isis:metric?      std-metric
+   |  |  |     |     |        |     |  +--ro isis:supported?   boolean
+   |  |  |     |     |        |     +--ro isis:error-metric
+   |  |  |     |     |        |        +--ro isis:metric?      std-metric
+   |  |  |     |     |        |        +--ro isis:supported?   boolean
+   |  |  |     |     |        +--ro isis:protocol-supported*              uint8
+   |  |  |     |     |        +--ro isis:ipv4-external-reachability
+   |  |  |     |     |        |  +--ro isis:prefixes* [ip-prefix]
+   |  |  |     |     |        |     +--ro isis:up-down?          boolean
+   |  |  |     |     |        |     +--ro isis:i-e?              boolean
+   |  |  |     |     |        |     +--ro isis:ip-prefix         inet:ipv4-address
+   |  |  |     |     |        |     +--ro isis:prefix-len?       uint8
+   |  |  |     |     |        |     +--ro isis:default-metric?   std-metric
+   |  |  |     |     |        |     +--ro isis:delay-metric
+   |  |  |     |     |        |     |  +--ro isis:metric?      std-metric
+   |  |  |     |     |        |     |  +--ro isis:supported?   boolean
+   |  |  |     |     |        |     +--ro isis:expense-metric
+   |  |  |     |     |        |     |  +--ro isis:metric?      std-metric
+   |  |  |     |     |        |     |  +--ro isis:supported?   boolean
+   |  |  |     |     |        |     +--ro isis:error-metric
+   |  |  |     |     |        |        +--ro isis:metric?      std-metric
+   |  |  |     |     |        |        +--ro isis:supported?   boolean
+   |  |  |     |     |        +--ro isis:ipv4-addresses*                  inet:ipv4-address
+   |  |  |     |     |        +--ro isis:ipv4-te-routerid?                inet:ipv4-address
+   |  |  |     |     |        +--ro isis:extended-ipv4-reachability
+   |  |  |     |     |        |  +--ro isis:prefixes* [ip-prefix]
+   |  |  |     |     |        |     +--ro isis:up-down?             boolean
+   |  |  |     |     |        |     +--ro isis:ip-prefix            inet:ipv4-address
+   |  |  |     |     |        |     +--ro isis:prefix-len?          uint8
+   |  |  |     |     |        |     +--ro isis:metric?              wide-metric
+   |  |  |     |     |        |     +--ro isis:tag*                 uint32
+   |  |  |     |     |        |     +--ro isis:tag64*               uint64
+   |  |  |     |     |        |     +--ro isis:prefix-segment-id* [value]
+   |  |  |     |     |        |        +--ro isis:flags?       bits
+   |  |  |     |     |        |        +--ro isis:algorithm?   uint8
+   |  |  |     |     |        |        +--ro isis:value        uint32
+   |  |  |     |     |        +--ro isis:dynamic-hostname?                string
+   |  |  |     |     |        +--ro isis:ipv6-te-routerid?                inet:ipv6-address
+   |  |  |     |     |        +--ro isis:mt-is-neighbor
+   |  |  |     |     |        |  +--ro isis:neighbor* [neighbor-id]
+   |  |  |     |     |        |     +--ro isis:MT-ID?                  uint16
+   |  |  |     |     |        |     +--ro isis:neighbor-id             system-id
+   |  |  |     |     |        |     +--ro isis:metric?                 wide-metric
+   |  |  |     |     |        |     +--ro isis:adjacency-segment-id* [value]
+   |  |  |     |     |        |        +--ro isis:flags?         bits
+   |  |  |     |     |        |        +--ro isis:weight?        uint8
+   |  |  |     |     |        |        +--ro isis:neighbor-id?   system-id
+   |  |  |     |     |        |        +--ro isis:value          uint32
+   |  |  |     |     |        +--ro isis:mt-entries
+   |  |  |     |     |        |  +--ro isis:topology* [MT-ID]
+   |  |  |     |     |        |     +--ro isis:MT-ID         uint16
+   |  |  |     |     |        |     +--ro isis:attributes?   bits
+   |  |  |     |     |        +--ro isis:ipv6-addresses*                  inet:ipv6-address
+   |  |  |     |     |        +--ro isis:mt-extended-ipv4-reachability
+   |  |  |     |     |        |  +--ro isis:prefixes* [ip-prefix]
+   |  |  |     |     |        |     +--ro isis:MT-ID?               uint16
+   |  |  |     |     |        |     +--ro isis:up-down?             boolean
+   |  |  |     |     |        |     +--ro isis:ip-prefix            inet:ipv4-address
+   |  |  |     |     |        |     +--ro isis:prefix-len?          uint8
+   |  |  |     |     |        |     +--ro isis:metric?              wide-metric
+   |  |  |     |     |        |     +--ro isis:tag*                 uint32
+   |  |  |     |     |        |     +--ro isis:tag64*               uint64
+   |  |  |     |     |        |     +--ro isis:prefix-segment-id* [value]
+   |  |  |     |     |        |        +--ro isis:flags?       bits
+   |  |  |     |     |        |        +--ro isis:algorithm?   uint8
+   |  |  |     |     |        |        +--ro isis:value        uint32
+   |  |  |     |     |        +--ro isis:mt-ipv6-reachability
+   |  |  |     |     |        |  +--ro isis:prefixes* [ip-prefix]
+   |  |  |     |     |        |     +--ro isis:MT-ID?               uint16
+   |  |  |     |     |        |     +--ro isis:up-down?             boolean
+   |  |  |     |     |        |     +--ro isis:ip-prefix            inet:ipv6-address
+   |  |  |     |     |        |     +--ro isis:prefix-len?          uint8
+   |  |  |     |     |        |     +--ro isis:metric?              wide-metric
+   |  |  |     |     |        |     +--ro isis:tag*                 uint32
+   |  |  |     |     |        |     +--ro isis:tag64*               uint64
+   |  |  |     |     |        |     +--ro isis:prefix-segment-id* [value]
+   |  |  |     |     |        |        +--ro isis:flags?       bits
+   |  |  |     |     |        |        +--ro isis:algorithm?   uint8
+   |  |  |     |     |        |        +--ro isis:value        uint32
+   |  |  |     |     |        +--ro isis:ipv6-reachability
+   |  |  |     |     |        |  +--ro isis:prefixes* [ip-prefix]
+   |  |  |     |     |        |     +--ro isis:up-down?             boolean
+   |  |  |     |     |        |     +--ro isis:ip-prefix            inet:ipv6-address
+   |  |  |     |     |        |     +--ro isis:prefix-len?          uint8
+   |  |  |     |     |        |     +--ro isis:metric?              wide-metric
+   |  |  |     |     |        |     +--ro isis:tag*                 uint32
+   |  |  |     |     |        |     +--ro isis:tag64*               uint64
+   |  |  |     |     |        |     +--ro isis:prefix-segment-id* [value]
+   |  |  |     |     |        |        +--ro isis:flags?       bits
+   |  |  |     |     |        |        +--ro isis:algorithm?   uint8
+   |  |  |     |     |        |        +--ro isis:value        uint32
+   |  |  |     |     |        +--ro isis:router-capabilities*
+   |  |  |     |     |           +--ro isis:flags?                       bits
+   |  |  |     |     |           +--ro isis:segment-routing*
+   |  |  |     |     |           |  +--ro isis:flags?            bits
+   |  |  |     |     |           |  +--ro isis:range?            uint32
+   |  |  |     |     |           |  +--ro isis:starting-value?   uint32
+   |  |  |     |     |           +--ro isis:segment-routing-algorithm*   uint8
+   |  |  |     |     |           +--ro isis:binary?                      binary
+   |  |  |     |     +--ro isis:hostnames
+   |  |  |     |        +--ro isis:hostname* [system-id]
+   |  |  |     |           +--ro isis:system-id    system-id
+   |  |  |     |           +--ro isis:hostname?    string
+   |  |  |     +--ro ospf:ospf
+   |  |  |        +--ro ospf:operation-mode?   identityref
+   |  |  |        +--ro ospf:instance* [routing-instance af]
+   |  |  |           +--ro ospf:routing-instance    rt:routing-instance-ref
+   |  |  |           +--ro ospf:af                  identityref
+   |  |  |           +--ro ospf:router-id?          yang:dotted-quad
+   |  |  |           +--ro ospf:neighbor* [area-id interface neighbor-id]
+   |  |  |           |  +--ro ospf:area-id        area-id-type
+   |  |  |           |  +--ro ospf:interface      if:interface-ref
+   |  |  |           |  +--ro ospf:neighbor-id    inet:ipv4-address
+   |  |  |           |  +--ro ospf:address?       inet:ip-address
+   |  |  |           |  +--ro ospf:dr?            inet:ipv4-address
+   |  |  |           |  +--ro ospf:bdr?           inet:ipv4-address
+   |  |  |           |  +--ro ospf:state?         nbr-state-type
+   |  |  |           +--ro ospf:interface* [area-id interface]
+   |  |  |           |  +--ro ospf:area-id                area-id-type
+   |  |  |           |  +--ro ospf:interface              if:interface-ref
+   |  |  |           |  +--ro ospf:network-type?          enumeration
+   |  |  |           |  +--ro ospf:passive?               boolean
+   |  |  |           |  +--ro ospf:demand-circuit?        boolean {demand-circuit}?
+   |  |  |           |  +--ro ospf:multi-area {multi-area-adj}?
+   |  |  |           |  |  +--ro ospf:multi-area-id?   area-id-type
+   |  |  |           |  |  +--ro ospf:cost?            uint16
+   |  |  |           |  +--ro ospf:static-neighbors
+   |  |  |           |  |  +--ro ospf:neighbor* [address]
+   |  |  |           |  |     +--ro ospf:address          inet:ip-address
+   |  |  |           |  |     +--ro ospf:cost?            uint16
+   |  |  |           |  |     +--ro ospf:poll-interval?   uint16
+   |  |  |           |  |     +--ro ospf:priority?        uint8
+   |  |  |           |  +--ro ospf:cost?                  uint16
+   |  |  |           |  +--ro ospf:hello-interval?        uint16
+   |  |  |           |  +--ro ospf:dead-interval?         uint16
+   |  |  |           |  +--ro ospf:retransmit-interval?   uint16
+   |  |  |           |  +--ro ospf:transmit-delay?        uint16
+   |  |  |           |  +--ro ospf:mtu-ignore?            boolean {mtu-ignore}?
+   |  |  |           |  +--ro ospf:lls?                   boolean {lls}?
+   |  |  |           |  +--ro ospf:prefix-suppression?    boolean {prefix-suppression}?
+   |  |  |           |  +--ro ospf:bfd?                   boolean {bfd}?
+   |  |  |           |  +--ro ospf:ttl-security {ttl-security}?
+   |  |  |           |  |  +--ro ospf:enable?   boolean
+   |  |  |           |  |  +--ro ospf:hops?     uint8
+   |  |  |           |  +--ro ospf:protocol-shutdown {protocol-if-shutdown}?
+   |  |  |           |  |  +--ro ospf:shutdown?   boolean
+   |  |  |           |  +--ro ospf:state?                 if-state-type
+   |  |  |           |  +--ro ospf:hello-timer?           uint32
+   |  |  |           |  +--ro ospf:wait-timer?            uint32
+   |  |  |           |  +--ro ospf:neighbor*
+   |  |  |           |  |  +--ro ospf:neighbor-id?   leafref
+   |  |  |           |  +--ro ospf:dr?                    inet:ipv4-address
+   |  |  |           |  +--ro ospf:bdr?                   inet:ipv4-address
+   |  |  |           |  +--ro ospf:topology* [name]
+   |  |  |           |     +--ro ospf:name    rt:rib-ref
+   |  |  |           +--ro ospf:area* [area-id]
+   |  |  |           |  +--ro ospf:area-id    area-id-type
+   |  |  |           +--ro ospf:databases
+   |  |  |           |  +--ro ospf:link-scope-lsas* [area-id interface lsa-type]
+   |  |  |           |  |  +--ro ospf:area-id           uint32
+   |  |  |           |  |  +--ro ospf:interface         if:interface-ref
+   |  |  |           |  |  +--ro ospf:lsa-type          uint8
+   |  |  |           |  |  +--ro ospf:link-scope-lsa* [lsa-id adv-router]
+   |  |  |           |  |     +--ro ospf:lsa-id               union
+   |  |  |           |  |     +--ro ospf:adv-router           inet:ipv4-address
+   |  |  |           |  |     +--ro ospf:decoded-completed?   boolean
+   |  |  |           |  |     +--ro ospf:raw-data?            yang:hex-string
+   |  |  |           |  |     +--ro (version)?
+   |  |  |           |  |        +--:(ospfv2)
+   |  |  |           |  |        |  +--ro ospf:ospfv2
+   |  |  |           |  |        |     +--ro ospf:header
+   |  |  |           |  |        |     |  +--ro ospf:option         bits
+   |  |  |           |  |        |     |  +--ro ospf:lsa-id         inet:ipv4-address
+   |  |  |           |  |        |     |  +--ro ospf:opaque-type    uint8
+   |  |  |           |  |        |     |  +--ro ospf:opaque-id      uint24
+   |  |  |           |  |        |     |  +--ro ospf:age            uint16
+   |  |  |           |  |        |     |  +--ro ospf:type           uint16
+   |  |  |           |  |        |     |  +--ro ospf:adv-router     yang:dotted-quad
+   |  |  |           |  |        |     |  +--ro ospf:seq-num        uint32
+   |  |  |           |  |        |     |  +--ro ospf:checksum       uint16
+   |  |  |           |  |        |     |  +--ro ospf:length         uint16
+   |  |  |           |  |        |     +--ro ospf:body
+   |  |  |           |  |        |        +--ro ospf:router
+   |  |  |           |  |        |        |  +--ro ospf:flags?          bits
+   |  |  |           |  |        |        |  +--ro ospf:num-of-links?   uint16
+   |  |  |           |  |        |        |  +--ro ospf:link* [link-id link-data]
+   |  |  |           |  |        |        |     +--ro ospf:link-id      union
+   |  |  |           |  |        |        |     +--ro ospf:link-data    union
+   |  |  |           |  |        |        |     +--ro ospf:type?        uint8
+   |  |  |           |  |        |        |     +--ro ospf:topology* [mt-id]
+   |  |  |           |  |        |        |        +--ro ospf:mt-id     uint8
+   |  |  |           |  |        |        |        +--ro ospf:metric?   uint16
+   |  |  |           |  |        |        +--ro ospf:network
+   |  |  |           |  |        |        |  +--ro ospf:network-mask?      inet:ipv4-address
+   |  |  |           |  |        |        |  +--ro ospf:attached-router*   yang:dotted-quad
+   |  |  |           |  |        |        +--ro ospf:summary
+   |  |  |           |  |        |        |  +--ro ospf:network-mask?   inet:ipv4-address
+   |  |  |           |  |        |        |  +--ro ospf:topology* [mt-id]
+   |  |  |           |  |        |        |     +--ro ospf:mt-id     uint8
+   |  |  |           |  |        |        |     +--ro ospf:metric?   uint24
+   |  |  |           |  |        |        +--ro ospf:external
+   |  |  |           |  |        |        |  +--ro ospf:network-mask?   inet:ipv4-address
+   |  |  |           |  |        |        |  +--ro ospf:topology* [mt-id]
+   |  |  |           |  |        |        |     +--ro ospf:mt-id                 uint8
+   |  |  |           |  |        |        |     +--ro ospf:flags?                bits
+   |  |  |           |  |        |        |     +--ro ospf:metric?               uint24
+   |  |  |           |  |        |        |     +--ro ospf:forwarding-address?   inet:ipv4-address
+   |  |  |           |  |        |        |     +--ro ospf:external-route-tag?   uint32
+   |  |  |           |  |        |        +--ro ospf:opaque
+   |  |  |           |  |        |           +--ro ospf:unknown-tlv* [type]
+   |  |  |           |  |        |           |  +--ro ospf:type      uint16
+   |  |  |           |  |        |           |  +--ro ospf:length?   uint16
+   |  |  |           |  |        |           |  +--ro ospf:value?    yang:hex-string
+   |  |  |           |  |        |           +--ro ospf:router-address-tlv
+   |  |  |           |  |        |           |  +--ro ospf:router-address?   inet:ipv4-address
+   |  |  |           |  |        |           +--ro ospf:link-tlv
+   |  |  |           |  |        |              +--ro ospf:link-type                   uint8
+   |  |  |           |  |        |              +--ro ospf:link-id                     union
+   |  |  |           |  |        |              +--ro ospf:local-if-ipv4-addr*         inet:ipv4-address
+   |  |  |           |  |        |              +--ro ospf:local-remote-ipv4-addr*     inet:ipv4-address
+   |  |  |           |  |        |              +--ro ospf:te-metric?                  uint32
+   |  |  |           |  |        |              +--ro ospf:max-bandwidth?              decimal64
+   |  |  |           |  |        |              +--ro ospf:max-reservable-bandwidth?   decimal64
+   |  |  |           |  |        |              +--ro ospf:unreserved-bandwidth?       decimal64
+   |  |  |           |  |        |              +--ro ospf:admin-group?                uint32
+   |  |  |           |  |        |              +--ro ospf:unknown-subtlv* [type]
+   |  |  |           |  |        |                 +--ro ospf:type      uint16
+   |  |  |           |  |        |                 +--ro ospf:length?   uint16
+   |  |  |           |  |        |                 +--ro ospf:value?    yang:hex-string
+   |  |  |           |  |        +--:(ospfv3)
+   |  |  |           |  |           +--ro ospf:ospfv3
+   |  |  |           |  |              +--ro ospf:header
+   |  |  |           |  |              |  +--ro ospf:lsa-id        uint32
+   |  |  |           |  |              |  +--ro ospf:age           uint16
+   |  |  |           |  |              |  +--ro ospf:type          uint16
+   |  |  |           |  |              |  +--ro ospf:adv-router    yang:dotted-quad
+   |  |  |           |  |              |  +--ro ospf:seq-num       uint32
+   |  |  |           |  |              |  +--ro ospf:checksum      uint16
+   |  |  |           |  |              |  +--ro ospf:length        uint16
+   |  |  |           |  |              +--ro ospf:body
+   |  |  |           |  |                 +--ro ospf:router
+   |  |  |           |  |                 |  +--ro ospf:flags      bits
+   |  |  |           |  |                 |  +--ro ospf:options    bits
+   |  |  |           |  |                 |  +--ro ospf:link* [interface-id neighbor-interface-id neighbor-router-id]
+   |  |  |           |  |                 |     +--ro ospf:interface-id             uint32
+   |  |  |           |  |                 |     +--ro ospf:neighbor-interface-id    uint32
+   |  |  |           |  |                 |     +--ro ospf:neighbor-router-id       yang:dotted-quad
+   |  |  |           |  |                 |     +--ro ospf:type?                    uint8
+   |  |  |           |  |                 |     +--ro ospf:metric?                  uint16
+   |  |  |           |  |                 +--ro ospf:network
+   |  |  |           |  |                 |  +--ro ospf:options            bits
+   |  |  |           |  |                 |  +--ro ospf:attached-router*   yang:dotted-quad
+   |  |  |           |  |                 +--ro ospf:inter-area-prefix
+   |  |  |           |  |                 |  +--ro ospf:metric?           uint24
+   |  |  |           |  |                 |  +--ro ospf:prefix?           inet:ip-prefix
+   |  |  |           |  |                 |  +--ro ospf:prefix-options    bits
+   |  |  |           |  |                 +--ro ospf:inter-area-router
+   |  |  |           |  |                 |  +--ro ospf:options                  bits
+   |  |  |           |  |                 |  +--ro ospf:metric?                  uint24
+   |  |  |           |  |                 |  +--ro ospf:destination-router-id?   yang:dotted-quad
+   |  |  |           |  |                 +--ro ospf:as-external
+   |  |  |           |  |                 |  +--ro ospf:metric?                     uint24
+   |  |  |           |  |                 |  +--ro ospf:flags?                      bits
+   |  |  |           |  |                 |  +--ro ospf:referenced-ls-type?         uint16
+   |  |  |           |  |                 |  +--ro ospf:prefix?                     inet:ip-prefix
+   |  |  |           |  |                 |  +--ro ospf:prefix-options              bits
+   |  |  |           |  |                 |  +--ro ospf:forwarding-address?         inet:ipv6-address
+   |  |  |           |  |                 |  +--ro ospf:external-route-tag?         uint32
+   |  |  |           |  |                 |  +--ro ospf:referenced-link-state-id?   uint32
+   |  |  |           |  |                 +--ro ospf:nssa
+   |  |  |           |  |                 |  +--ro ospf:metric?                     uint24
+   |  |  |           |  |                 |  +--ro ospf:flags?                      bits
+   |  |  |           |  |                 |  +--ro ospf:referenced-ls-type?         uint16
+   |  |  |           |  |                 |  +--ro ospf:prefix?                     inet:ip-prefix
+   |  |  |           |  |                 |  +--ro ospf:prefix-options              bits
+   |  |  |           |  |                 |  +--ro ospf:forwarding-address?         inet:ipv6-address
+   |  |  |           |  |                 |  +--ro ospf:external-route-tag?         uint32
+   |  |  |           |  |                 |  +--ro ospf:referenced-link-state-id?   uint32
+   |  |  |           |  |                 +--ro ospf:link
+   |  |  |           |  |                 |  +--ro ospf:rtr-priority?                   uint8
+   |  |  |           |  |                 |  +--ro ospf:options                         bits
+   |  |  |           |  |                 |  +--ro ospf:link-local-interface-address?   inet:ipv6-address
+   |  |  |           |  |                 |  +--ro ospf:num-of-prefixes?                uint32
+   |  |  |           |  |                 |  +--ro ospf:prefix* [prefix]
+   |  |  |           |  |                 |     +--ro ospf:prefix            inet:ip-prefix
+   |  |  |           |  |                 |     +--ro ospf:prefix-options    bits
+   |  |  |           |  |                 +--ro ospf:intra-area-prefix
+   |  |  |           |  |                    +--ro ospf:referenced-ls-type?         uint16
+   |  |  |           |  |                    +--ro ospf:referenced-link-state-id?   uint32
+   |  |  |           |  |                    +--ro ospf:referenced-adv-router?      inet:ipv4-address
+   |  |  |           |  |                    +--ro ospf:num-of-prefixes?            uint16
+   |  |  |           |  |                    +--ro ospf:prefix* [prefix]
+   |  |  |           |  |                       +--ro ospf:prefix            inet:ip-prefix
+   |  |  |           |  |                       +--ro ospf:prefix-options    bits
+   |  |  |           |  |                       +--ro ospf:metric?           uint24
+   |  |  |           |  +--ro ospf:area-scope-lsas* [area-id lsa-type]
+   |  |  |           |  |  +--ro ospf:lsa-type          uint8
+   |  |  |           |  |  +--ro ospf:area-id           uint32
+   |  |  |           |  |  +--ro ospf:area-scope-lsa* [lsa-id adv-router]
+   |  |  |           |  |     +--ro ospf:lsa-id               union
+   |  |  |           |  |     +--ro ospf:adv-router           inet:ipv4-address
+   |  |  |           |  |     +--ro ospf:decoded-completed?   boolean
+   |  |  |           |  |     +--ro ospf:raw-data?            yang:hex-string
+   |  |  |           |  |     +--ro (version)?
+   |  |  |           |  |        +--:(ospfv2)
+   |  |  |           |  |        |  +--ro ospf:ospfv2
+   |  |  |           |  |        |     +--ro ospf:header
+   |  |  |           |  |        |     |  +--ro ospf:option         bits
+   |  |  |           |  |        |     |  +--ro ospf:lsa-id         inet:ipv4-address
+   |  |  |           |  |        |     |  +--ro ospf:opaque-type    uint8
+   |  |  |           |  |        |     |  +--ro ospf:opaque-id      uint24
+   |  |  |           |  |        |     |  +--ro ospf:age            uint16
+   |  |  |           |  |        |     |  +--ro ospf:type           uint16
+   |  |  |           |  |        |     |  +--ro ospf:adv-router     yang:dotted-quad
+   |  |  |           |  |        |     |  +--ro ospf:seq-num        uint32
+   |  |  |           |  |        |     |  +--ro ospf:checksum       uint16
+   |  |  |           |  |        |     |  +--ro ospf:length         uint16
+   |  |  |           |  |        |     +--ro ospf:body
+   |  |  |           |  |        |        +--ro ospf:router
+   |  |  |           |  |        |        |  +--ro ospf:flags?          bits
+   |  |  |           |  |        |        |  +--ro ospf:num-of-links?   uint16
+   |  |  |           |  |        |        |  +--ro ospf:link* [link-id link-data]
+   |  |  |           |  |        |        |     +--ro ospf:link-id      union
+   |  |  |           |  |        |        |     +--ro ospf:link-data    union
+   |  |  |           |  |        |        |     +--ro ospf:type?        uint8
+   |  |  |           |  |        |        |     +--ro ospf:topology* [mt-id]
+   |  |  |           |  |        |        |        +--ro ospf:mt-id     uint8
+   |  |  |           |  |        |        |        +--ro ospf:metric?   uint16
+   |  |  |           |  |        |        +--ro ospf:network
+   |  |  |           |  |        |        |  +--ro ospf:network-mask?      inet:ipv4-address
+   |  |  |           |  |        |        |  +--ro ospf:attached-router*   yang:dotted-quad
+   |  |  |           |  |        |        +--ro ospf:summary
+   |  |  |           |  |        |        |  +--ro ospf:network-mask?   inet:ipv4-address
+   |  |  |           |  |        |        |  +--ro ospf:topology* [mt-id]
+   |  |  |           |  |        |        |     +--ro ospf:mt-id     uint8
+   |  |  |           |  |        |        |     +--ro ospf:metric?   uint24
+   |  |  |           |  |        |        +--ro ospf:external
+   |  |  |           |  |        |        |  +--ro ospf:network-mask?   inet:ipv4-address
+   |  |  |           |  |        |        |  +--ro ospf:topology* [mt-id]
+   |  |  |           |  |        |        |     +--ro ospf:mt-id                 uint8
+   |  |  |           |  |        |        |     +--ro ospf:flags?                bits
+   |  |  |           |  |        |        |     +--ro ospf:metric?               uint24
+   |  |  |           |  |        |        |     +--ro ospf:forwarding-address?   inet:ipv4-address
+   |  |  |           |  |        |        |     +--ro ospf:external-route-tag?   uint32
+   |  |  |           |  |        |        +--ro ospf:opaque
+   |  |  |           |  |        |           +--ro ospf:unknown-tlv* [type]
+   |  |  |           |  |        |           |  +--ro ospf:type      uint16
+   |  |  |           |  |        |           |  +--ro ospf:length?   uint16
+   |  |  |           |  |        |           |  +--ro ospf:value?    yang:hex-string
+   |  |  |           |  |        |           +--ro ospf:router-address-tlv
+   |  |  |           |  |        |           |  +--ro ospf:router-address?   inet:ipv4-address
+   |  |  |           |  |        |           +--ro ospf:link-tlv
+   |  |  |           |  |        |              +--ro ospf:link-type                   uint8
+   |  |  |           |  |        |              +--ro ospf:link-id                     union
+   |  |  |           |  |        |              +--ro ospf:local-if-ipv4-addr*         inet:ipv4-address
+   |  |  |           |  |        |              +--ro ospf:local-remote-ipv4-addr*     inet:ipv4-address
+   |  |  |           |  |        |              +--ro ospf:te-metric?                  uint32
+   |  |  |           |  |        |              +--ro ospf:max-bandwidth?              decimal64
+   |  |  |           |  |        |              +--ro ospf:max-reservable-bandwidth?   decimal64
+   |  |  |           |  |        |              +--ro ospf:unreserved-bandwidth?       decimal64
+   |  |  |           |  |        |              +--ro ospf:admin-group?                uint32
+   |  |  |           |  |        |              +--ro ospf:unknown-subtlv* [type]
+   |  |  |           |  |        |                 +--ro ospf:type      uint16
+   |  |  |           |  |        |                 +--ro ospf:length?   uint16
+   |  |  |           |  |        |                 +--ro ospf:value?    yang:hex-string
+   |  |  |           |  |        +--:(ospfv3)
+   |  |  |           |  |           +--ro ospf:ospfv3
+   |  |  |           |  |              +--ro ospf:header
+   |  |  |           |  |              |  +--ro ospf:lsa-id        uint32
+   |  |  |           |  |              |  +--ro ospf:age           uint16
+   |  |  |           |  |              |  +--ro ospf:type          uint16
+   |  |  |           |  |              |  +--ro ospf:adv-router    yang:dotted-quad
+   |  |  |           |  |              |  +--ro ospf:seq-num       uint32
+   |  |  |           |  |              |  +--ro ospf:checksum      uint16
+   |  |  |           |  |              |  +--ro ospf:length        uint16
+   |  |  |           |  |              +--ro ospf:body
+   |  |  |           |  |                 +--ro ospf:router
+   |  |  |           |  |                 |  +--ro ospf:flags      bits
+   |  |  |           |  |                 |  +--ro ospf:options    bits
+   |  |  |           |  |                 |  +--ro ospf:link* [interface-id neighbor-interface-id neighbor-router-id]
+   |  |  |           |  |                 |     +--ro ospf:interface-id             uint32
+   |  |  |           |  |                 |     +--ro ospf:neighbor-interface-id    uint32
+   |  |  |           |  |                 |     +--ro ospf:neighbor-router-id       yang:dotted-quad
+   |  |  |           |  |                 |     +--ro ospf:type?                    uint8
+   |  |  |           |  |                 |     +--ro ospf:metric?                  uint16
+   |  |  |           |  |                 +--ro ospf:network
+   |  |  |           |  |                 |  +--ro ospf:options            bits
+   |  |  |           |  |                 |  +--ro ospf:attached-router*   yang:dotted-quad
+   |  |  |           |  |                 +--ro ospf:inter-area-prefix
+   |  |  |           |  |                 |  +--ro ospf:metric?           uint24
+   |  |  |           |  |                 |  +--ro ospf:prefix?           inet:ip-prefix
+   |  |  |           |  |                 |  +--ro ospf:prefix-options    bits
+   |  |  |           |  |                 +--ro ospf:inter-area-router
+   |  |  |           |  |                 |  +--ro ospf:options                  bits
+   |  |  |           |  |                 |  +--ro ospf:metric?                  uint24
+   |  |  |           |  |                 |  +--ro ospf:destination-router-id?   yang:dotted-quad
+   |  |  |           |  |                 +--ro ospf:as-external
+   |  |  |           |  |                 |  +--ro ospf:metric?                     uint24
+   |  |  |           |  |                 |  +--ro ospf:flags?                      bits
+   |  |  |           |  |                 |  +--ro ospf:referenced-ls-type?         uint16
+   |  |  |           |  |                 |  +--ro ospf:prefix?                     inet:ip-prefix
+   |  |  |           |  |                 |  +--ro ospf:prefix-options              bits
+   |  |  |           |  |                 |  +--ro ospf:forwarding-address?         inet:ipv6-address
+   |  |  |           |  |                 |  +--ro ospf:external-route-tag?         uint32
+   |  |  |           |  |                 |  +--ro ospf:referenced-link-state-id?   uint32
+   |  |  |           |  |                 +--ro ospf:nssa
+   |  |  |           |  |                 |  +--ro ospf:metric?                     uint24
+   |  |  |           |  |                 |  +--ro ospf:flags?                      bits
+   |  |  |           |  |                 |  +--ro ospf:referenced-ls-type?         uint16
+   |  |  |           |  |                 |  +--ro ospf:prefix?                     inet:ip-prefix
+   |  |  |           |  |                 |  +--ro ospf:prefix-options              bits
+   |  |  |           |  |                 |  +--ro ospf:forwarding-address?         inet:ipv6-address
+   |  |  |           |  |                 |  +--ro ospf:external-route-tag?         uint32
+   |  |  |           |  |                 |  +--ro ospf:referenced-link-state-id?   uint32
+   |  |  |           |  |                 +--ro ospf:link
+   |  |  |           |  |                 |  +--ro ospf:rtr-priority?                   uint8
+   |  |  |           |  |                 |  +--ro ospf:options                         bits
+   |  |  |           |  |                 |  +--ro ospf:link-local-interface-address?   inet:ipv6-address
+   |  |  |           |  |                 |  +--ro ospf:num-of-prefixes?                uint32
+   |  |  |           |  |                 |  +--ro ospf:prefix* [prefix]
+   |  |  |           |  |                 |     +--ro ospf:prefix            inet:ip-prefix
+   |  |  |           |  |                 |     +--ro ospf:prefix-options    bits
+   |  |  |           |  |                 +--ro ospf:intra-area-prefix
+   |  |  |           |  |                    +--ro ospf:referenced-ls-type?         uint16
+   |  |  |           |  |                    +--ro ospf:referenced-link-state-id?   uint32
+   |  |  |           |  |                    +--ro ospf:referenced-adv-router?      inet:ipv4-address
+   |  |  |           |  |                    +--ro ospf:num-of-prefixes?            uint16
+   |  |  |           |  |                    +--ro ospf:prefix* [prefix]
+   |  |  |           |  |                       +--ro ospf:prefix            inet:ip-prefix
+   |  |  |           |  |                       +--ro ospf:prefix-options    bits
+   |  |  |           |  |                       +--ro ospf:metric?           uint24
+   |  |  |           |  +--ro ospf:as-scope-lsas* [lsa-type]
+   |  |  |           |     +--ro ospf:lsa-type        uint8
+   |  |  |           |     +--ro ospf:as-scope-lsa* [lsa-id adv-router]
+   |  |  |           |        +--ro ospf:lsa-id               union
+   |  |  |           |        +--ro ospf:adv-router           inet:ipv4-address
+   |  |  |           |        +--ro ospf:decoded-completed?   boolean
+   |  |  |           |        +--ro ospf:raw-data?            yang:hex-string
+   |  |  |           |        +--ro (version)?
+   |  |  |           |           +--:(ospfv2)
+   |  |  |           |           |  +--ro ospf:ospfv2
+   |  |  |           |           |     +--ro ospf:header
+   |  |  |           |           |     |  +--ro ospf:option         bits
+   |  |  |           |           |     |  +--ro ospf:lsa-id         inet:ipv4-address
+   |  |  |           |           |     |  +--ro ospf:opaque-type    uint8
+   |  |  |           |           |     |  +--ro ospf:opaque-id      uint24
+   |  |  |           |           |     |  +--ro ospf:age            uint16
+   |  |  |           |           |     |  +--ro ospf:type           uint16
+   |  |  |           |           |     |  +--ro ospf:adv-router     yang:dotted-quad
+   |  |  |           |           |     |  +--ro ospf:seq-num        uint32
+   |  |  |           |           |     |  +--ro ospf:checksum       uint16
+   |  |  |           |           |     |  +--ro ospf:length         uint16
+   |  |  |           |           |     +--ro ospf:body
+   |  |  |           |           |        +--ro ospf:router
+   |  |  |           |           |        |  +--ro ospf:flags?          bits
+   |  |  |           |           |        |  +--ro ospf:num-of-links?   uint16
+   |  |  |           |           |        |  +--ro ospf:link* [link-id link-data]
+   |  |  |           |           |        |     +--ro ospf:link-id      union
+   |  |  |           |           |        |     +--ro ospf:link-data    union
+   |  |  |           |           |        |     +--ro ospf:type?        uint8
+   |  |  |           |           |        |     +--ro ospf:topology* [mt-id]
+   |  |  |           |           |        |        +--ro ospf:mt-id     uint8
+   |  |  |           |           |        |        +--ro ospf:metric?   uint16
+   |  |  |           |           |        +--ro ospf:network
+   |  |  |           |           |        |  +--ro ospf:network-mask?      inet:ipv4-address
+   |  |  |           |           |        |  +--ro ospf:attached-router*   yang:dotted-quad
+   |  |  |           |           |        +--ro ospf:summary
+   |  |  |           |           |        |  +--ro ospf:network-mask?   inet:ipv4-address
+   |  |  |           |           |        |  +--ro ospf:topology* [mt-id]
+   |  |  |           |           |        |     +--ro ospf:mt-id     uint8
+   |  |  |           |           |        |     +--ro ospf:metric?   uint24
+   |  |  |           |           |        +--ro ospf:external
+   |  |  |           |           |        |  +--ro ospf:network-mask?   inet:ipv4-address
+   |  |  |           |           |        |  +--ro ospf:topology* [mt-id]
+   |  |  |           |           |        |     +--ro ospf:mt-id                 uint8
+   |  |  |           |           |        |     +--ro ospf:flags?                bits
+   |  |  |           |           |        |     +--ro ospf:metric?               uint24
+   |  |  |           |           |        |     +--ro ospf:forwarding-address?   inet:ipv4-address
+   |  |  |           |           |        |     +--ro ospf:external-route-tag?   uint32
+   |  |  |           |           |        +--ro ospf:opaque
+   |  |  |           |           |           +--ro ospf:unknown-tlv* [type]
+   |  |  |           |           |           |  +--ro ospf:type      uint16
+   |  |  |           |           |           |  +--ro ospf:length?   uint16
+   |  |  |           |           |           |  +--ro ospf:value?    yang:hex-string
+   |  |  |           |           |           +--ro ospf:router-address-tlv
+   |  |  |           |           |           |  +--ro ospf:router-address?   inet:ipv4-address
+   |  |  |           |           |           +--ro ospf:link-tlv
+   |  |  |           |           |              +--ro ospf:link-type                   uint8
+   |  |  |           |           |              +--ro ospf:link-id                     union
+   |  |  |           |           |              +--ro ospf:local-if-ipv4-addr*         inet:ipv4-address
+   |  |  |           |           |              +--ro ospf:local-remote-ipv4-addr*     inet:ipv4-address
+   |  |  |           |           |              +--ro ospf:te-metric?                  uint32
+   |  |  |           |           |              +--ro ospf:max-bandwidth?              decimal64
+   |  |  |           |           |              +--ro ospf:max-reservable-bandwidth?   decimal64
+   |  |  |           |           |              +--ro ospf:unreserved-bandwidth?       decimal64
+   |  |  |           |           |              +--ro ospf:admin-group?                uint32
+   |  |  |           |           |              +--ro ospf:unknown-subtlv* [type]
+   |  |  |           |           |                 +--ro ospf:type      uint16
+   |  |  |           |           |                 +--ro ospf:length?   uint16
+   |  |  |           |           |                 +--ro ospf:value?    yang:hex-string
+   |  |  |           |           +--:(ospfv3)
+   |  |  |           |              +--ro ospf:ospfv3
+   |  |  |           |                 +--ro ospf:header
+   |  |  |           |                 |  +--ro ospf:lsa-id        uint32
+   |  |  |           |                 |  +--ro ospf:age           uint16
+   |  |  |           |                 |  +--ro ospf:type          uint16
+   |  |  |           |                 |  +--ro ospf:adv-router    yang:dotted-quad
+   |  |  |           |                 |  +--ro ospf:seq-num       uint32
+   |  |  |           |                 |  +--ro ospf:checksum      uint16
+   |  |  |           |                 |  +--ro ospf:length        uint16
+   |  |  |           |                 +--ro ospf:body
+   |  |  |           |                    +--ro ospf:router
+   |  |  |           |                    |  +--ro ospf:flags      bits
+   |  |  |           |                    |  +--ro ospf:options    bits
+   |  |  |           |                    |  +--ro ospf:link* [interface-id neighbor-interface-id neighbor-router-id]
+   |  |  |           |                    |     +--ro ospf:interface-id             uint32
+   |  |  |           |                    |     +--ro ospf:neighbor-interface-id    uint32
+   |  |  |           |                    |     +--ro ospf:neighbor-router-id       yang:dotted-quad
+   |  |  |           |                    |     +--ro ospf:type?                    uint8
+   |  |  |           |                    |     +--ro ospf:metric?                  uint16
+   |  |  |           |                    +--ro ospf:network
+   |  |  |           |                    |  +--ro ospf:options            bits
+   |  |  |           |                    |  +--ro ospf:attached-router*   yang:dotted-quad
+   |  |  |           |                    +--ro ospf:inter-area-prefix
+   |  |  |           |                    |  +--ro ospf:metric?           uint24
+   |  |  |           |                    |  +--ro ospf:prefix?           inet:ip-prefix
+   |  |  |           |                    |  +--ro ospf:prefix-options    bits
+   |  |  |           |                    +--ro ospf:inter-area-router
+   |  |  |           |                    |  +--ro ospf:options                  bits
+   |  |  |           |                    |  +--ro ospf:metric?                  uint24
+   |  |  |           |                    |  +--ro ospf:destination-router-id?   yang:dotted-quad
+   |  |  |           |                    +--ro ospf:as-external
+   |  |  |           |                    |  +--ro ospf:metric?                     uint24
+   |  |  |           |                    |  +--ro ospf:flags?                      bits
+   |  |  |           |                    |  +--ro ospf:referenced-ls-type?         uint16
+   |  |  |           |                    |  +--ro ospf:prefix?                     inet:ip-prefix
+   |  |  |           |                    |  +--ro ospf:prefix-options              bits
+   |  |  |           |                    |  +--ro ospf:forwarding-address?         inet:ipv6-address
+   |  |  |           |                    |  +--ro ospf:external-route-tag?         uint32
+   |  |  |           |                    |  +--ro ospf:referenced-link-state-id?   uint32
+   |  |  |           |                    +--ro ospf:nssa
+   |  |  |           |                    |  +--ro ospf:metric?                     uint24
+   |  |  |           |                    |  +--ro ospf:flags?                      bits
+   |  |  |           |                    |  +--ro ospf:referenced-ls-type?         uint16
+   |  |  |           |                    |  +--ro ospf:prefix?                     inet:ip-prefix
+   |  |  |           |                    |  +--ro ospf:prefix-options              bits
+   |  |  |           |                    |  +--ro ospf:forwarding-address?         inet:ipv6-address
+   |  |  |           |                    |  +--ro ospf:external-route-tag?         uint32
+   |  |  |           |                    |  +--ro ospf:referenced-link-state-id?   uint32
+   |  |  |           |                    +--ro ospf:link
+   |  |  |           |                    |  +--ro ospf:rtr-priority?                   uint8
+   |  |  |           |                    |  +--ro ospf:options                         bits
+   |  |  |           |                    |  +--ro ospf:link-local-interface-address?   inet:ipv6-address
+   |  |  |           |                    |  +--ro ospf:num-of-prefixes?                uint32
+   |  |  |           |                    |  +--ro ospf:prefix* [prefix]
+   |  |  |           |                    |     +--ro ospf:prefix            inet:ip-prefix
+   |  |  |           |                    |     +--ro ospf:prefix-options    bits
+   |  |  |           |                    +--ro ospf:intra-area-prefix
+   |  |  |           |                       +--ro ospf:referenced-ls-type?         uint16
+   |  |  |           |                       +--ro ospf:referenced-link-state-id?   uint32
+   |  |  |           |                       +--ro ospf:referenced-adv-router?      inet:ipv4-address
+   |  |  |           |                       +--ro ospf:num-of-prefixes?            uint16
+   |  |  |           |                       +--ro ospf:prefix* [prefix]
+   |  |  |           |                          +--ro ospf:prefix            inet:ip-prefix
+   |  |  |           |                          +--ro ospf:prefix-options    bits
+   |  |  |           |                          +--ro ospf:metric?           uint24
+   |  |  |           +--ro ospf:topology* [name]
+   |  |  |              +--ro ospf:name    rt:rib-ref
+   |  |  |              +--ro ospf:area* [area-id]
+   |  |  |                 +--ro ospf:area-id    area-id-type
+   |  |  +--ro sr:segment-routing
+   |  |     +--ro sr:label-blocks*
+   |  |     |  +--ro sr:lower-bound?   uint32
+   |  |     |  +--ro sr:upper-bound?   uint32
+   |  |     |  +--ro sr:size?          uint32
+   |  |     |  +--ro sr:free?          uint32
+   |  |     |  +--ro sr:used?          uint32
+   |  |     +--ro sr:global-sid-list
+   |  |        +--ro sr:sid* [target sid source source-protocol binding-type]
+   |  |           +--ro sr:target             string
+   |  |           +--ro sr:sid                uint32
+   |  |           +--ro sr:algorithm?         uint8
+   |  |           +--ro sr:source             inet:ip-address
+   |  |           +--ro sr:used?              boolean
+   |  |           +--ro sr:source-protocol    leafref
+   |  |           +--ro sr:binding-type       enumeration
+   |  +--ro ribs
+   |  |  +--ro rib* [name]
+   |  |     +--ro name              string
+   |  |     +--ro id                uint64
+   |  |     +--ro address-family    identityref
+   |  |     +--ro routes
+   |  |     |  +--ro route* [id]
+   |  |     |     +--ro id                         uint64
+   |  |     |     +--ro (next-hop-options)
+   |  |     |     |  +--:(special-next-hop)
+   |  |     |     |  |  +--ro special-next-hop?          enumeration
+   |  |     |     |  +--:(simple-next-hop)
+   |  |     |     |  |  +--ro outgoing-interface?        leafref
+   |  |     |     |  |  +--ro v4ur:next-hop?             inet:ipv4-address
+   |  |     |     |  +--:(next-hop-list) {multipath-routes}?
+   |  |     |     |     +--ro next-hop-list
+   |  |     |     |        +--ro next-hop* [id]
+   |  |     |     |           +--ro id                    uint64
+   |  |     |     |           +--ro outgoing-interface?   leafref
+   |  |     |     |           +--ro priority?             enumeration
+   |  |     |     |           +--ro weight?               uint8
+   |  |     |     |           +--ro v4ur:address?         inet:ipv4-address
+   |  |     |     +--ro source-protocol            identityref
+   |  |     |     +--ro last-updated?              yang:date-and-time
+   |  |     |     +--ro isis:metric?               uint32
+   |  |     |     +--ro isis:tag*                  uint64
+   |  |     |     +--ro isis:route-type?           enumeration
+   |  |     |     +--ro ospf:metric?               uint32
+   |  |     |     +--ro ospf:tag?                  uint32
+   |  |     |     +--ro ospf:route-type?           enumeration
+   |  |     |     +--ro v4ur:destination-prefix?   inet:ipv4-prefix
+   |  |     +--ro recipient-ribs {multiple-ribs}?
+   |  |        +--ro recipient-rib* [rib-name]
+   |  |           +--ro rib-name    rib-state-ref
+   |  |           +--ro filter?     route-filter-state-ref
+   |  +--ro route-filters
+   |     +--ro route-filter* [name]
+   |        +--ro name    string
+   |        +--ro type    identityref
+   +--rw routing
+      +--rw routing-instance* [name]
+      |  +--rw name                  string
+      |  +--rw type?                 identityref
+      |  +--rw enabled?              boolean
+      |  +--rw router-id?            yang:dotted-quad
+      |  +--rw description?          string
+      |  +--rw default-ribs {multiple-ribs}?
+      |  |  +--rw default-rib* [address-family]
+      |  |     +--rw address-family    identityref
+      |  |     +--rw rib-name          string
+      |  +--rw interfaces
+      |  |  +--rw interface* [name]
+      |  |     +--rw name    if:interface-ref
+      |  +--rw routing-protocols
+      |  |  +--rw routing-protocol* [name]
+      |  |     +--rw name              string
+      |  |     +--rw description?      string
+      |  |     +--rw enabled?          boolean
+      |  |     +--rw type              identityref
+      |  |     +--rw connected-ribs
+      |  |     |  +--rw connected-rib* [rib-name]
+      |  |     |     +--rw rib-name         rib-ref
+      |  |     |     +--rw import-filter?   route-filter-ref
+      |  |     |     +--rw export-filter?   route-filter-ref
+      |  |     +--rw static-routes
+      |  |     |  +--rw v4ur:ipv4
+      |  |     |     +--rw v4ur:route* [id]
+      |  |     |        +--rw v4ur:id                    uint32
+      |  |     |        +--rw v4ur:description?          string
+      |  |     |        +--rw v4ur:destination-prefix    inet:ipv4-prefix
+      |  |     |        +--rw (next-hop-options)
+      |  |     |           +--:(special-next-hop)
+      |  |     |           |  +--rw v4ur:special-next-hop?     enumeration
+      |  |     |           +--:(simple-next-hop)
+      |  |     |           |  +--rw v4ur:next-hop?             inet:ipv4-address
+      |  |     |           |  +--rw v4ur:outgoing-interface?   leafref
+      |  |     |           +--:(next-hop-list) {rt:multipath-routes}?
+      |  |     |              +--rw v4ur:next-hop-list
+      |  |     |                 +--rw v4ur:next-hop* [id]
+      |  |     |                    +--rw v4ur:id                    uint32
+      |  |     |                    +--rw v4ur:address?              inet:ipv4-address
+      |  |     |                    +--rw v4ur:outgoing-interface?   leafref
+      |  |     |                    +--rw v4ur:priority?             enumeration
+      |  |     |                    +--rw v4ur:weight?               uint8
+      |  |     +--rw isis:isis
+      |  |     |  +--rw isis:instance* [routing-instance]
+      |  |     |     +--rw isis:routing-instance    rt:routing-instance-ref
+      |  |     |     +--rw isis:level-type?         level
+      |  |     |     +--rw isis:system-id?          system-id
+      |  |     |     +--rw isis:area-address*       area-address
+      |  |     |     +--rw isis:mpls
+      |  |     |     +--rw isis:lsp-mtu?            uint16
+      |  |     |     +--rw isis:lsp-lifetime?       uint16
+      |  |     |     +--rw isis:authentication* [level]
+      |  |     |     |  +--rw isis:key?     string
+      |  |     |     |  +--rw isis:type?    authentication-type
+      |  |     |     |  +--rw isis:level    level
+      |  |     |     +--rw isis:metric-type* [level]
+      |  |     |     |  +--rw isis:value?   enumeration
+      |  |     |     |  +--rw isis:level    level
+      |  |     |     +--rw isis:preference* [level]
+      |  |     |     |  +--rw (granularity)?
+      |  |     |     |  |  +--:(detail)
+      |  |     |     |  |  |  +--rw isis:internal?   uint8
+      |  |     |     |  |  |  +--rw isis:external?   uint8
+      |  |     |     |  |  +--:(coarse)
+      |  |     |     |  |     +--rw isis:default?    uint8
+      |  |     |     |  +--rw isis:level       level
+      |  |     |     +--rw isis:default-metric* [level]
+      |  |     |     |  +--rw isis:value?   wide-metric
+      |  |     |     |  +--rw isis:level    level
+      |  |     |     +--rw isis:overload* [level]
+      |  |     |     |  +--rw isis:status?    boolean
+      |  |     |     |  +--rw isis:timeout?   uint16
+      |  |     |     |  +--rw isis:level      level
+      |  |     |     +--rw isis:interfaces
+      |  |     |     |  +--rw isis:interface* [name]
+      |  |     |     |     +--rw isis:name                       if:interface-ref
+      |  |     |     |     +--rw isis:level-type?                level
+      |  |     |     |     +--rw isis:lsp-pacing-interval?       uint16
+      |  |     |     |     +--rw isis:lsp-retransmit-interval?   uint16
+      |  |     |     |     +--rw isis:passive?                   boolean
+      |  |     |     |     +--rw isis:csnp-interval?             uint16
+      |  |     |     |     +--rw isis:hello-padding
+      |  |     |     |     |  +--rw isis:enabled?   boolean
+      |  |     |     |     +--rw isis:mesh-group-enabled?        mesh-group-state
+      |  |     |     |     +--rw isis:mesh-group?                uint8
+      |  |     |     |     +--rw isis:interface-type?            interface-type
+      |  |     |     |     +--rw isis:enabled?                   boolean
+      |  |     |     |     +--rw isis:hello-authentication* [level]
+      |  |     |     |     |  +--rw isis:type?    authentication-type
+      |  |     |     |     |  +--rw isis:key?     string
+      |  |     |     |     |  +--rw isis:level    level
+      |  |     |     |     +--rw isis:hello-interval* [level]
+      |  |     |     |     |  +--rw isis:value?   uint16
+      |  |     |     |     |  +--rw isis:level    level
+      |  |     |     |     +--rw isis:hello-multiplier* [level]
+      |  |     |     |     |  +--rw isis:value?   uint16
+      |  |     |     |     |  +--rw isis:level    level
+      |  |     |     |     +--rw isis:priority* [level]
+      |  |     |     |     |  +--rw isis:value?   uint8
+      |  |     |     |     |  +--rw isis:level    level
+      |  |     |     |     +--rw isis:metric* [level]
+      |  |     |     |     |  +--rw isis:value?   wide-metric
+      |  |     |     |     |  +--rw isis:level    level
+      |  |     |     |     +--rw isis:af* [af]
+      |  |     |     |     |  +--rw isis:af    identityref
+      |  |     |     |     +--rw isis:topologies* [name]
+      |  |     |     |     |  +--rw isis:name      rt:rib-ref
+      |  |     |     |     |  +--rw isis:metric* [level]
+      |  |     |     |     |     +--rw isis:value?   wide-metric
+      |  |     |     |     |     +--rw isis:level    level
+      |  |     |     |     +--rw isis:mpls
+      |  |     |     +--rw sr:segment-routing
+      |  |     |        +--rw sr:enabled?    boolean
+      |  |     |        +--rw sr:bindings
+      |  |     |           +--rw sr:advertise?   boolean
+      |  |     |           +--rw sr:receive?     boolean
+      |  |     +--rw ospf:ospf
+      |  |        +--rw ospf:all-instances-inherit {instance-inheritance}?
+      |  |        |  +--rw ospf:area
+      |  |        |  +--rw ospf:interface
+      |  |        +--rw ospf:operation-mode?          identityref
+      |  |        +--rw ospf:instance* [routing-instance af]
+      |  |           +--rw ospf:routing-instance     rt:routing-instance-ref
+      |  |           +--rw ospf:af                   identityref
+      |  |           +--rw ospf:router-id?           yang:dotted-quad {router-id}?
+      |  |           +--rw ospf:admin-distance
+      |  |           |  +--rw (granularity)?
+      |  |           |  |  +--:(detail)
+      |  |           |  |  |  +--rw ospf:intra-area?   uint8
+      |  |           |  |  |  +--rw ospf:inter-area?   uint8
+      |  |           |  |  +--:(coarse)
+      |  |           |  |     +--rw ospf:internal?     uint8
+      |  |           |  +--rw ospf:external?     uint8
+      |  |           +--rw ospf:nsr {nsr}?
+      |  |           |  +--rw ospf:enable?   boolean
+      |  |           +--rw ospf:graceful-restart {graceful-restart}?
+      |  |           |  +--rw ospf:enable?                       boolean
+      |  |           |  +--rw ospf:helper-enable?                boolean
+      |  |           |  +--rw ospf:restart-interval?             uint16
+      |  |           |  +--rw ospf:helper-strict-lsa-checking?   boolean
+      |  |           +--rw ospf:protocol-shutdown {protocol-shutdown}?
+      |  |           |  +--rw ospf:shutdown?   boolean
+      |  |           +--rw ospf:auto-cost {auto-cost}?
+      |  |           |  +--rw ospf:enable?                boolean
+      |  |           |  +--rw ospf:reference-bandwidth?   uint32
+      |  |           +--rw ospf:maximum
+      |  |           |  +--rw ospf:paths?     uint16 {max-ecmp}?
+      |  |           |  +--rw ospf:max-lsa?   uint32 {max-lsa}?
+      |  |           +--rw ospf:mpls
+      |  |           |  +--rw ospf:te-rid {te-rid}?
+      |  |           |  |  +--rw (source)?
+      |  |           |  |     +--:(interface)
+      |  |           |  |     |  +--rw ospf:interface?   if:interface-ref
+      |  |           |  |     +--:(explicit)
+      |  |           |  |        +--rw ospf:router-id?   inet:ipv4-address
+      |  |           |  +--rw ospf:ldp
+      |  |           |     +--rw ospf:igp-sync?     boolean {ldp-igp-sync}?
+      |  |           |     +--rw ospf:autoconfig?   boolean {ldp-igp-autoconfig}?
+      |  |           +--rw ospf:all-areas-inherit {area-inheritance}?
+      |  |           |  +--rw ospf:area
+      |  |           |  +--rw ospf:interface
+      |  |           +--rw ospf:area* [area-id]
+      |  |           |  +--rw ospf:area-id                   area-id-type
+      |  |           |  +--rw ospf:area-type?                identityref
+      |  |           |  +--rw ospf:summary?                  boolean
+      |  |           |  +--rw ospf:default-cost?             uint32
+      |  |           |  +--rw ospf:range* [prefix]
+      |  |           |  |  +--rw ospf:prefix       inet:ip-prefix
+      |  |           |  |  +--rw ospf:advertise?   boolean
+      |  |           |  |  +--rw ospf:cost?        uint24
+      |  |           |  +--rw ospf:all-interfaces-inherit {interface-inheritance}?
+      |  |           |  |  +--rw ospf:interface
+      |  |           |  +--rw ospf:virtual-link* [router-id]
+      |  |           |  |  +--rw ospf:router-id              yang:dotted-quad
+      |  |           |  |  +--rw ospf:cost?                  uint16
+      |  |           |  |  +--rw ospf:hello-interval?        uint16
+      |  |           |  |  +--rw ospf:dead-interval?         uint16
+      |  |           |  |  +--rw ospf:retransmit-interval?   uint16
+      |  |           |  |  +--rw ospf:transmit-delay?        uint16
+      |  |           |  |  +--rw ospf:mtu-ignore?            boolean {mtu-ignore}?
+      |  |           |  |  +--rw ospf:lls?                   boolean {lls}?
+      |  |           |  |  +--rw ospf:prefix-suppression?    boolean {prefix-suppression}?
+      |  |           |  |  +--rw ospf:bfd?                   boolean {bfd}?
+      |  |           |  |  +--rw ospf:ttl-security {ttl-security}?
+      |  |           |  |  |  +--rw ospf:enable?   boolean
+      |  |           |  |  |  +--rw ospf:hops?     uint8
+      |  |           |  |  +--rw ospf:protocol-shutdown {protocol-if-shutdown}?
+      |  |           |  |     +--rw ospf:shutdown?   boolean
+      |  |           |  +--rw ospf:sham-link* [local-id remote-id]
+      |  |           |  |  +--rw ospf:local-id               inet:ip-address
+      |  |           |  |  +--rw ospf:remote-id              inet:ip-address
+      |  |           |  |  +--rw ospf:cost?                  uint16
+      |  |           |  |  +--rw ospf:hello-interval?        uint16
+      |  |           |  |  +--rw ospf:dead-interval?         uint16
+      |  |           |  |  +--rw ospf:retransmit-interval?   uint16
+      |  |           |  |  +--rw ospf:transmit-delay?        uint16
+      |  |           |  |  +--rw ospf:mtu-ignore?            boolean {mtu-ignore}?
+      |  |           |  |  +--rw ospf:lls?                   boolean {lls}?
+      |  |           |  |  +--rw ospf:prefix-suppression?    boolean {prefix-suppression}?
+      |  |           |  |  +--rw ospf:bfd?                   boolean {bfd}?
+      |  |           |  |  +--rw ospf:ttl-security {ttl-security}?
+      |  |           |  |  |  +--rw ospf:enable?   boolean
+      |  |           |  |  |  +--rw ospf:hops?     uint8
+      |  |           |  |  +--rw ospf:protocol-shutdown {protocol-if-shutdown}?
+      |  |           |  |     +--rw ospf:shutdown?   boolean
+      |  |           |  +--rw ospf:interface* [interface]
+      |  |           |     +--rw ospf:interface              if:interface-ref
+      |  |           |     +--rw ospf:network-type?          enumeration
+      |  |           |     +--rw ospf:passive?               boolean
+      |  |           |     +--rw ospf:demand-circuit?        boolean {demand-circuit}?
+      |  |           |     +--rw ospf:multi-area {multi-area-adj}?
+      |  |           |     |  +--rw ospf:multi-area-id?   area-id-type
+      |  |           |     |  +--rw ospf:cost?            uint16
+      |  |           |     +--rw ospf:static-neighbors
+      |  |           |     |  +--rw ospf:neighbor* [address]
+      |  |           |     |     +--rw ospf:address          inet:ip-address
+      |  |           |     |     +--rw ospf:cost?            uint16
+      |  |           |     |     +--rw ospf:poll-interval?   uint16
+      |  |           |     |     +--rw ospf:priority?        uint8
+      |  |           |     +--rw ospf:cost?                  uint16
+      |  |           |     +--rw ospf:hello-interval?        uint16
+      |  |           |     +--rw ospf:dead-interval?         uint16
+      |  |           |     +--rw ospf:retransmit-interval?   uint16
+      |  |           |     +--rw ospf:transmit-delay?        uint16
+      |  |           |     +--rw ospf:mtu-ignore?            boolean {mtu-ignore}?
+      |  |           |     +--rw ospf:lls?                   boolean {lls}?
+      |  |           |     +--rw ospf:prefix-suppression?    boolean {prefix-suppression}?
+      |  |           |     +--rw ospf:bfd?                   boolean {bfd}?
+      |  |           |     +--rw ospf:ttl-security {ttl-security}?
+      |  |           |     |  +--rw ospf:enable?   boolean
+      |  |           |     |  +--rw ospf:hops?     uint8
+      |  |           |     +--rw ospf:protocol-shutdown {protocol-if-shutdown}?
+      |  |           |     |  +--rw ospf:shutdown?   boolean
+      |  |           |     +--rw ospf:topology* [name]
+      |  |           |        +--rw ospf:name    rt:rib-ref
+      |  |           |        +--rw ospf:cost?   uint32
+      |  |           +--rw ospf:topology* [name]
+      |  |           |  +--rw ospf:name    rt:rib-ref
+      |  |           |  +--rw ospf:area* [area-id]
+      |  |           |     +--rw ospf:area-id         area-id-type
+      |  |           |     +--rw ospf:area-type?      identityref
+      |  |           |     +--rw ospf:summary?        boolean
+      |  |           |     +--rw ospf:default-cost?   uint32
+      |  |           |     +--rw ospf:range* [prefix]
+      |  |           |        +--rw ospf:prefix       inet:ip-prefix
+      |  |           |        +--rw ospf:advertise?   boolean
+      |  |           |        +--rw ospf:cost?        uint24
+      |  |           +--rw sr:segment-routing
+      |  |              +--rw sr:enabled?    boolean
+      |  |              +--rw sr:bindings
+      |  |                 +--rw sr:advertise?   boolean
+      |  |                 +--rw sr:receive?     boolean
+      |  +--rw sr:segment-routing
+      |     +--rw sr:transport-type?   identityref
+      |     +--rw sr:bindings
+      |     |  +--rw sr:mapping-server
+      |     |     +--rw sr:ipv4
+      |     |     |  +--rw sr:mapping-entry* [prefix]
+      |     |     |     +--rw sr:prefix       inet:ipv4-prefix
+      |     |     |     +--rw sr:start-sid?   uint32
+      |     |     |     +--rw sr:range?       uint32
+      |     |     +--rw sr:ipv6
+      |     |        +--rw sr:mapping-entry* [prefix]
+      |     |           +--rw sr:prefix       inet:ipv6-prefix
+      |     |           +--rw sr:start-sid?   uint32
+      |     |           +--rw sr:range?       uint32
+      |     +--rw sr:srgb* [lower-bound upper-bound]
+      |     |  +--rw sr:lower-bound    uint32
+      |     |  +--rw sr:upper-bound    uint32
+      |     +--rw sr:interfaces
+      |        +--rw sr:interface* [name]
+      |           +--rw sr:name             if:interface-ref
+      |           +--rw sr:adjacency-sid
+      |           |  +--rw sr:authorize-bundle
+      |           |  |  +--rw sr:enabled?   boolean
+      |           |  |  +--rw sr:weight?    uint8
+      |           |  +--rw sr:advertise-protection?   enumeration
+      |           +--rw sr:prefix-sid
+      |              +--rw sr:ipv4
+      |              |  +--rw sr:prefix-sid* [value]
+      |              |     +--rw sr:value-type?          enumeration
+      |              |     +--rw sr:value                uint32
+      |              |     +--rw sr:node-flag?           boolean
+      |              |     +--rw sr:last-hop-behavior?   enumeration
+      |              +--rw sr:ipv6
+      |                 +--rw sr:prefix-sid* [value]
+      |                    +--rw sr:value-type?          enumeration
+      |                    +--rw sr:value                uint32
+      |                    +--rw sr:node-flag?           boolean
+      |                    +--rw sr:last-hop-behavior?   enumeration
+      +--rw ribs
+      |  +--rw rib* [name]
+      |     +--rw name              string
+      |     +--rw address-family    identityref
+      |     +--rw description?      string
+      |     +--rw recipient-ribs {multiple-ribs}?
+      |        +--rw recipient-rib* [rib-name]
+      |           +--rw rib-name    rib-ref
+      |           +--rw filter?     route-filter-ref
+      +--rw route-filters
+         +--rw route-filter* [name]
+            +--rw name           string
+            +--rw description?   string
+            +--rw type           identityref
+rpcs:
+   +---x active-route    
+   |  +--ro input     
+   |  |  +--ro routing-instance-name    routing-instance-state-ref
+   |  |  +--ro destination-address
+   |  |     +--ro address-family    identityref
+   |  |     +--ro v4ur:address?     inet:ipv4-address
+   |  +--ro output    
+   |     +--ro route
+   |        +--ro address-family             identityref
+   |        +--ro (next-hop-options)
+   |        |  +--:(special-next-hop)
+   |        |  |  +--ro special-next-hop?          enumeration
+   |        |  +--:(simple-next-hop)
+   |        |  |  +--ro outgoing-interface?        leafref
+   |        |  |  +--ro v4ur:next-hop?             inet:ipv4-address
+   |        |  +--:(next-hop-list) {multipath-routes}?
+   |        |     +--ro next-hop-list
+   |        |        +--ro next-hop* [id]
+   |        |           +--ro id                    uint64
+   |        |           +--ro outgoing-interface?   leafref
+   |        |           +--ro priority?             enumeration
+   |        |           +--ro weight?               uint8
+   |        |           +--ro v4ur:address?         inet:ipv4-address
+   |        +--ro source-protocol            identityref
+   |        +--ro last-updated?              yang:date-and-time
+   |        +--ro isis:metric?               uint32
+   |        +--ro isis:tag*                  uint64
+   |        +--ro isis:route-type?           enumeration
+   |        +--ro ospf:metric?               uint32
+   |        +--ro ospf:tag?                  uint32
+   |        +--ro ospf:route-type?           enumeration
+   |        +--ro v4ur:destination-prefix?   inet:ipv4-prefix
+   +---x route-count     
+      +--ro input     
+      |  +--ro rib-name    rib-state-ref
+      +--ro output    
+         +--ro number-of-routes    uint64
+module: ietf-interfaces
+   +--rw interfaces
+   |  +--rw interface* [name]
+   |     +--rw name                        string
+   |     +--rw description?                string
+   |     +--rw type                        identityref
+   |     +--rw enabled?                    boolean
+   |     +--rw link-up-down-trap-enable?   enumeration {if-mib}?
+   |     +--rw isis:clns-mtu?              uint16
+   |     +--rw ip:ipv4!
+   |     |  +--rw ip:enabled?      boolean
+   |     |  +--rw ip:forwarding?   boolean
+   |     |  +--rw ip:mtu?          uint16
+   |     |  +--rw ip:address* [ip]
+   |     |  |  +--rw ip:ip               inet:ipv4-address-no-zone
+   |     |  |  +--rw (subnet)
+   |     |  |     +--:(prefix-length)
+   |     |  |     |  +--rw ip:prefix-length?   uint8
+   |     |  |     +--:(netmask)
+   |     |  |        +--rw ip:netmask?         yang:dotted-quad {ipv4-non-contiguous-netmasks}?
+   |     |  +--rw ip:neighbor* [ip]
+   |     |     +--rw ip:ip                    inet:ipv4-address-no-zone
+   |     |     +--rw ip:link-layer-address    yang:phys-address
+   |     +--rw ip:ipv6!
+   |        +--rw ip:enabled?                     boolean
+   |        +--rw ip:forwarding?                  boolean
+   |        +--rw ip:mtu?                         uint32
+   |        +--rw ip:address* [ip]
+   |        |  +--rw ip:ip               inet:ipv6-address-no-zone
+   |        |  +--rw ip:prefix-length    uint8
+   |        +--rw ip:neighbor* [ip]
+   |        |  +--rw ip:ip                    inet:ipv6-address-no-zone
+   |        |  +--rw ip:link-layer-address    yang:phys-address
+   |        +--rw ip:dup-addr-detect-transmits?   uint32
+   |        +--rw ip:autoconf
+   |           +--rw ip:create-global-addresses?        boolean
+   |           +--rw ip:create-temporary-addresses?     boolean {ipv6-privacy-autoconf}?
+   |           +--rw ip:temporary-valid-lifetime?       uint32 {ipv6-privacy-autoconf}?
+   |           +--rw ip:temporary-preferred-lifetime?   uint32 {ipv6-privacy-autoconf}?
+   +--ro interfaces-state
+      +--ro interface* [name]
+         +--ro name               string
+         +--ro type               identityref
+         +--ro admin-status       enumeration {if-mib}?
+         +--ro oper-status        enumeration
+         +--ro last-change?       yang:date-and-time
+         +--ro if-index           int32 {if-mib}?
+         +--ro phys-address?      yang:phys-address
+         +--ro higher-layer-if*   interface-state-ref
+         +--ro lower-layer-if*    interface-state-ref
+         +--ro speed?             yang:gauge64
+         +--ro statistics
+         |  +--ro discontinuity-time    yang:date-and-time
+         |  +--ro in-octets?            yang:counter64
+         |  +--ro in-unicast-pkts?      yang:counter64
+         |  +--ro in-broadcast-pkts?    yang:counter64
+         |  +--ro in-multicast-pkts?    yang:counter64
+         |  +--ro in-discards?          yang:counter32
+         |  +--ro in-errors?            yang:counter32
+         |  +--ro in-unknown-protos?    yang:counter32
+         |  +--ro out-octets?           yang:counter64
+         |  +--ro out-unicast-pkts?     yang:counter64
+         |  +--ro out-broadcast-pkts?   yang:counter64
+         |  +--ro out-multicast-pkts?   yang:counter64
+         |  +--ro out-discards?         yang:counter32
+         |  +--ro out-errors?           yang:counter32
+         +--ro ip:ipv4!
+         |  +--ro ip:forwarding?   boolean
+         |  +--ro ip:mtu?          uint16
+         |  +--ro ip:address* [ip]
+         |  |  +--ro ip:ip               inet:ipv4-address-no-zone
+         |  |  +--ro (subnet)?
+         |  |  |  +--:(prefix-length)
+         |  |  |  |  +--ro ip:prefix-length?   uint8
+         |  |  |  +--:(netmask)
+         |  |  |     +--ro ip:netmask?         yang:dotted-quad {ipv4-non-contiguous-netmasks}?
+         |  |  +--ro ip:origin?          ip-address-origin
+         |  +--ro ip:neighbor* [ip]
+         |     +--ro ip:ip                    inet:ipv4-address-no-zone
+         |     +--ro ip:link-layer-address?   yang:phys-address
+         |     +--ro ip:origin?               neighbor-origin
+         +--ro ip:ipv6!
+            +--ro ip:forwarding?   boolean
+            +--ro ip:mtu?          uint32
+            +--ro ip:address* [ip]
+            |  +--ro ip:ip               inet:ipv6-address-no-zone
+            |  +--ro ip:prefix-length    uint8
+            |  +--ro ip:origin?          ip-address-origin
+            |  +--ro ip:status?          enumeration
+            +--ro ip:neighbor* [ip]
+               +--ro ip:ip                    inet:ipv6-address-no-zone
+               +--ro ip:link-layer-address?   yang:phys-address
+               +--ro ip:origin?               neighbor-origin
+               +--ro ip:is-router?            empty
+               +--ro ip:state?                enumeration
