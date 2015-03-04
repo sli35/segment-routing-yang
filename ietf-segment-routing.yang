@@ -63,6 +63,12 @@ module ietf-segment-routing {
 		routing.";
 	}	
 	
+	/* Features */
+	
+	feature mapping-server {
+		description
+		 "Support of SRMS.";
+	}
 	
 	/* Groupings */
 	
@@ -184,6 +190,7 @@ module ietf-segment-routing {
 			}
 			container bindings {
 				container mapping-server {
+					if-feature mapping-server;
 					container ipv4 {
 						list mapping-entry {
 							key prefix;
@@ -274,19 +281,8 @@ module ietf-segment-routing {
 						  the routing-instance.";
 					}
 					container adjacency-sid {
-						container authorize-bundle {
-							leaf enabled {
-								type boolean;
-								description
-								 "Enable/disable S flag.";
-							}
-							leaf weight {
-								type uint8;
-								description
-								 "The value represents the 
-								 weight of the Adj-SID
-								for the purpose of load balancing.";
-							}
+						leaf advertise-adj-group-sid {
+							type boolean;
 							description
 							 "Control advertisement of S flag.
 							 Enable to advertise a common Adj-SID
