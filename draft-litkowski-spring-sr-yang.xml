@@ -129,25 +129,50 @@
 	</list>
 	</t>
 		<section anchor="adj-cfg" title="Adjacency SID properties">
-		<t>
-		In case of parallel IP links between routers, an additional Adjacency
-   SID may be advertised representing more than one adjacency (i.e., 
-   a bundle of adjacencies). The "advertise-adj-group-sid" configuration 
-   controls whether or not an additional adjacency SID is advertised.
-		</t>
-		<t>
-		The "advertise-protection" defines how protection for an interface
-   is advertised.  It does not control the activation or deactivation of 
-   protection.  If the "single" option is used, a single Adj-SID will be
-   advertised for the interface.  If the interface is protected, the 
-   B-Flag for the Adj-SID advertisement will be set. If the "dual" 
-   option is used and if the interface is protected, two Adj-SIDs will
-   be advertised for the interface adjacencies. One Adj-SID will always
-   have the B-Flag set and the other will have the B-Flag clear.  This
-   option is intended to be used in the case of traffic engineering 
-   where a path must use either protected segments or non-protected
-   segments.
-		</t>
+			<section anchor="adj-cfg-bundling" title="Bundling">
+			<t>
+			In case of parallel IP links between routers, an additional Adjacency
+	   SID may be advertised representing more than one adjacency (i.e., 
+	   a bundle of adjacencies). The "advertise-adj-group-sid" configuration 
+	   controls whether or not an additional adjacency SID is advertised.
+			</t>
+			<t>The "advertise-adj-group-sid" would be a list of "group-id".
+			The "group-id" will permit to identify interfaces that must
+			be bundled together.</t>
+			<figure>
+			<artwork>
+
++-------+                 +------+
+|       | ------- L1 ---- |      |
+|   R1  | ------- L2 ---- |  R2  |
+|       | ------- L3 ---- |      |
+|       | ------- L4 ---- |      |
++-------+                 +------+
+			</artwork>
+			</figure>
+			<t>
+			In the figure above, R1 and R2 are interconnected by four links. A routing protocol adjacency is established on each link.
+			Operator would like to create segment-routing Adj-SID that represent some bundles of links. We can imagine two different bundles : L1/L2 and L2/L3.
+			To achieve this behavior, the service provider will configure a "group-id" X for both interfaces L1 and L2 and a "group-id" Y for both interfaces L3 and L3.
+			This will result in R1 advertising an additional Adj-SID for each adjacency, for example a Adj-SID with S flag set and value of 400 will be added to L1 and L2.
+			A Adj-SID with S flag set and value of 500 will be added to L3 and L4. As L1/L2 and L3/L4 does not share the same "group-id", a different SID value will be allocated.
+			</t>
+			</section>
+			<section anchor="adj-cfg-protection" title="Protection">
+			<t>
+			The "advertise-protection" defines how protection for an interface
+	   is advertised.  It does not control the activation or deactivation of 
+	   protection.  If the "single" option is used, a single Adj-SID will be
+	   advertised for the interface.  If the interface is protected, the 
+	   B-Flag for the Adj-SID advertisement will be set. If the "dual" 
+	   option is used and if the interface is protected, two Adj-SIDs will
+	   be advertised for the interface adjacencies. One Adj-SID will always
+	   have the B-Flag set and the other will have the B-Flag clear.  This
+	   option is intended to be used in the case of traffic engineering 
+	   where a path must use either protected segments or non-protected
+	   segments.
+			</t>
+			</section>
 		</section>
 		<section anchor="prefix-cfg" title="Prefix SID properties">
 		<t>
